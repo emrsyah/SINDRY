@@ -7,34 +7,34 @@ import {
   UilStoreAlt,
   UilPlus,
 } from "@iconscout/react-unicons";
-import { useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 const sidebarItems = [
   {
-    path: "/app/beranda",
+    path: "/app/a/beranda",
     name: "Beranda",
   },
   {
-    path: "/app/pesanan",
+    path: "/app/a/orderan",
     name: "Orderan",
   },
   {
-    path: "/app/produk",
+    path: "/app/a/produk",
     name: "Produk",
   },
   {
-    path: "/app/pelanggan",
+    path: "/app/a/pelanggan",
     name: "Pelanggan",
   },
   {
-    path: "/app/outlet",
+    path: "/app/a/outlet",
     name: "Outlet",
   },
 ];
 
 const sidebarItemsAdmin = [
   {
-    path: "/app/pengguna",
+    path: "/app/a/pengguna",
     name: "Pengguna",
   },
 ];
@@ -55,6 +55,11 @@ const SidebarAdmin = () => {
   const extractLocation = () => {
     const ar = location.pathname.split("/");
     if (ar[3] === "beranda") return "Beranda";
+    else if (ar[3] === "orderan") return "Orderan";
+    else if (ar[3] === "produk") return "Produk";
+    else if (ar[3] === "pelanggan") return "Pelanggan";
+    else if (ar[3] === "outlet") return "Outlet";
+    else if (ar[3] === "pengguna") return "Pengguna";
   };
 
   return (
@@ -70,10 +75,10 @@ const SidebarAdmin = () => {
       {/* Button Transaksi Disini */}
       <div className="sidebarList">
         {sidebarItems.map((item, i) => (
-          <div className={`sidebarItem ${extractLocation() === item.name ? "sidebarItemActive" : ""}`} key={i}>
+          <Link to={item.path} className={`sidebarItem ${extractLocation() === item.name ? "sidebarItemActive" : ""}`} key={i}>
             {getSidebarIcon(item.name)}
             <p>{item.name}</p>
-          </div>
+          </Link>
         ))}
       </div>
     </nav>
