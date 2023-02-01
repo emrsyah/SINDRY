@@ -3,7 +3,7 @@ import mysql from 'mysql';
 export const connectionSql = mysql.createConnection({
     host: "localhost",
     user: "root",
-    password: null,
+    password: undefined,
     database: "sindry_db"
 })
 

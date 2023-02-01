@@ -1,0 +1,90 @@
+$primaryB: #1a1a1a;
+$primary: #646cff;
+
+.layoutContainer{
+    display: grid;
+    grid-template-columns: minmax(232px, 256px) 1fr;
+}
+
+.sidebarContainer{
+    background: $primaryB;
+    height: 100vh;
+    padding: 20px;
+    display: flex;
+    gap: 16px;
+    flex-direction: column;
+
+    button{
+        background: $primary;
+        padding: 8px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        justify-content: center;
+        border-radius: 4px;
+        font-size: 14px;
+
+        svg{
+            width: 20px;
+        }
+    }
+
+    .sidebarHead{
+        display: flex;
+        align-items: center;
+        gap: 12px;
+
+        img{
+            width: 36px;
+        }
+
+        // h5{
+        //     size: 32px;
+        // }
+    }
+
+    .sidebarList{
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        
+        .sidebarItem{
+            border-radius: 4px;
+            display: flex;
+            font-size: 16px;
+            align-items: center;
+            gap: 12px;
+            color: rgb(220, 220, 220);
+            padding: 12px 12px 12px 8px;
+            cursor: pointer;
+
+            &:hover{
+                background: #0e0e0e;
+            }
+
+            svg{
+                width: 22px;
+            }
+
+            p{
+
+            }
+
+        }
+
+        .sidebarItemActive{
+            background: #9ea3f830;
+            color: $primary;
+            font-weight: 600;
+            &:hover{
+                background: #9ea3f830;
+                color: $primary;
+                font-weight: 600;
+            }
+        }
+
+    }
+    
+
+}

@@ -14,13 +14,13 @@ const Login = () => {
   const submitHandler = (ev: any) => {
     ev.preventDefault()
     console.log({email, password})
-    // nav('/app')
+    nav('/app/a')
     connectionSql.connect()
     var stateSql = "SELECT * from `transaksi`"
     connectionSql.query(stateSql, function(err, results, fields){
       if(err) console.error(err.code)
       else{
-        console.log(results[0].harga)
+        console.log(results)
       }
     })
   }
