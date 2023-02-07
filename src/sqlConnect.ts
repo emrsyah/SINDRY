@@ -4,7 +4,7 @@ export const connectionSql = mysql.createConnection({
     host: "localhost",
     user: "root",
     password: undefined,
-    database: "sindry_db"
+    database: "sindry"
 })
 
 // connection.connect()

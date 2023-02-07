@@ -1,0 +1,114 @@
+$primaryB: #1a1a1a;
+$primary: #646cff;
+
+
+.container {
+  // background: red;
+}
+
+.berandaHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  h4 {
+    padding: 6px;
+    border: white solid 1px;
+    border-radius: 6px;
+  }
+}
+
+.berandaDiv1 {
+  display: grid;
+  margin-top: 32px;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 16px;
+  grid-auto-flow: column;
+  .berandaSub1 {
+    background: $primaryB;
+    padding: 12px;
+    border-radius: 4px;
+    h5 {
+      font-weight: 500;
+      font-size: 16px;
+      opacity: 80%;
+    }
+    h4 {
+      font-size: 32px;
+    }
+  }
+}
+
+.berandaDiv2{
+    display: grid;
+    margin-top: 20px;
+    grid-template-columns: 2fr 312px;
+    gap: 16px;
+    grid-auto-flow: column;
+    .berandaSub2{
+        background: $primaryB;
+        border-radius: 4px;
+        padding: 12px;
+    }
+    .berandaSub2List{
+        padding: 20px 12px;
+        h4{
+            font-size: 20px;
+            font-weight: 700;
+        }
+        .berandaSub2ListItem{
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 10px;
+            h5{
+                font-weight: 600;
+                opacity: 90%;
+                font-size: 16px;
+            }
+            .berandaSub2ListItemDetail{
+                display: flex;
+                align-items: center;
+                gap: 3px;
+                h5{
+                    flex-grow: 1;
+                }
+                p{
+                    font-size: 14px;
+                    opacity: 80%;
+                }
+            }
+        }
+        button{
+            display: flex;
+            width: 100%;
+            color: $primary;
+            font-weight: 600;
+            margin-top: 12px;
+            border-radius: 4px;
+            justify-content: center;
+            border: $primary solid 1px;
+            font-size: 14px;
+        }
+        button:hover{
+            background: darken($color:$primaryB, $amount: 3);
+        }
+    }
+    .berandaSub2Stat{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+}
+
+.berandaDiv3{
+    display: grid;
+    margin-top: 20px;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    grid-auto-flow: column;
+    .berandaSub3{
+        background: $primaryB;
+        padding: 16px;
+        border-radius: 6px;
+    }
+}

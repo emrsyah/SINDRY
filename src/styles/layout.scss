@@ -4,15 +4,20 @@ $primary: #646cff;
 .layoutContainer{
     display: grid;
     grid-template-columns: minmax(232px, 256px) 1fr;
+    main{
+        padding: 32px;
+    }
 }
 
 .sidebarContainer{
     background: $primaryB;
-    height: 100vh;
+    height: 93.5vh;
     padding: 20px;
     display: flex;
     gap: 16px;
     flex-direction: column;
+    position: sticky;
+    top: 0px;
 
     button{
         background: $primary;
@@ -28,6 +33,10 @@ $primary: #646cff;
         svg{
             width: 20px;
         }
+    }
+
+    button:hover{
+        background: darken($color: $primary, $amount: 8);
     }
 
     .sidebarHead{
