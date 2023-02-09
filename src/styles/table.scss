@@ -26,16 +26,19 @@ $primaryB2: #323232;
 // border-collapse overflow-auto rounded-xl borderin bg-white text-sm w-full text-left
 .fillTable {
   table {
-    margin: 24px 0;
+    border: 1px solid $primaryB;
+    margin: 12px 0 24px 0;
     font-size: small;
     width: 100%;
     text-align: left;
-    border-radius: 6px 6px 0 0;
+    border-collapse: collapse;
     background: $primaryB;
+    border-radius: 6px 6px 0 0;
     thead {
       tr {
         th {
           font-weight: 600;
+          opacity: 70%;
           padding: 12px;
         }
       }
@@ -44,9 +47,10 @@ $primaryB2: #323232;
     tbody {
       background: $primaryB2;
       tr {
+        border-bottom: 1px solid $primaryB;
         font-weight: 500;
         td {
-          padding: 8px;
+          padding: 16px;
         }
       }
     }

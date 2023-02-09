@@ -9,6 +9,12 @@ import dayjs from "dayjs";
 
 const Outlet = () => {
   const [outlets, setOutlets] = useState<OutletListType[]>([]);
+  const [filterInput, setFilterInput] = useState<string>("");
+
+  const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value || "";
+    setFilterInput(value);
+  };
 
   useEffect(() => {
     connectionSql.connect();
@@ -67,15 +73,23 @@ const Outlet = () => {
         <h2>Outlet</h2>
         <button>Buat Baru</button>
       </div>
+      <div className="filterInput">
+        <input
+          type="text"
+          placeholder="Cari Dengan Nama"
+          onChange={handleFilterChange}
+          value={filterInput}
+        />
+      </div>
       {dataMemo.length ? (
-          <Table
-            columns={columns}
-            data={dataMemo}
-            filterColumn="name"
-            filterInput=""
-          />
+        <Table
+          columns={columns}
+          data={dataMemo}
+          filterColumn="name"
+          filterInput={filterInput}
+        />
       ) : (
-          <EmptyTable columns={columns} />
+        <EmptyTable columns={columns} />
       )}
     </div>
   );

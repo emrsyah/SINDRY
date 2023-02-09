@@ -13,3 +13,21 @@ $primaryB2: #323232;
         font-weight: 600;
     }
 }
+
+// nputText text-sm w-full mt-4 mb-2
+// bg-white p-2 rounded-md border-[1.8px] border-gray-300 focus:border-blue-600 outline-none font-medium;
+.filterInput{
+    font-size: small;
+    // width: 100%;
+    // width: max-content;
+    margin-top: 16px;
+    border-radius: 4px;
+    font-weight: 500;
+    outline: none;
+    border: #1a1a1a solid 1px;
+    display: flex;
+    input{
+        padding: 10px;
+        flex-grow: 1;
+    }
+}
