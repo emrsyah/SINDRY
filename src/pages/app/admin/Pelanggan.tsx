@@ -9,6 +9,12 @@ import EmptyTable from "@/components/EmptyTable";
 
 const Pelanggan = () => {
   const [customers, setCustomers] = useState<CustomerListType>([]);
+  const [filterInput, setFilterInput] = useState<string>("");
+
+  const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value || "";
+    setFilterInput(value);
+  };
 
   useEffect(() => {
     connectionSql.connect();
@@ -41,6 +47,7 @@ const Pelanggan = () => {
       {
         Header: "Outlet",
         accessor: "outlet_name",
+        Cell: ({ cell: { value } }: { cell: { value: string } }) => <span className="primaryC">{value}</span>,
       },
       {
         Header: "Ditambahkan Pada",
@@ -59,12 +66,20 @@ const Pelanggan = () => {
         <h2>Pelanggan</h2>
         <button>Tambah Baru</button>
       </div>
+      <div className="filterInput">
+        <input
+          type="text"
+          placeholder="Cari Dengan Nama"
+          onChange={handleFilterChange}
+          value={filterInput}
+        />
+      </div>
       {dataMemo.length ? (
         <Table
           columns={columns}
           data={dataMemo}
           filterColumn="name"
-          filterInput=""
+          filterInput={filterInput}
         />
       ) : (
         <EmptyTable columns={columns} />

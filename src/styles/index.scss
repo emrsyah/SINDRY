@@ -101,3 +101,43 @@ code {
 // .link {
 
 // }
+
+.primaryC{
+  color: $primary;
+  font-weight: 600;
+}
+
+@mixin typeBase {
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+.klType{
+  @include typeBase;
+  color: $primary;
+  background: rgba($primary, 20%);
+}
+
+.bcType{
+  @include typeBase;
+  color: #f29d53;
+  background: rgba(#f29d53, 20%);
+}
+
+.sType{
+  @include typeBase;
+  color: #53f26b;
+  background: rgba(#53f26b, 20%);
+}
+
+.kType{
+  @include typeBase;
+  color: #da53f2;
+  background: rgba(#da53f2, 20%);
+}
+
+.lType{
+  @include typeBase;
+  color: #5398f2;
+  background: rgba(#5398f2, 20%);
+}
