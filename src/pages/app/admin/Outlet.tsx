@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo } from "react";
-import "@/styles/adminOutlet.scss";
+import "@/styles/adminGeneral.scss";
 import EmptyTable from "@/components/EmptyTable";
 import { connectionSql } from "@/sqlConnect";
 import { useState } from "react";
@@ -67,7 +67,7 @@ const Outlet = () => {
         <h2>Outlet</h2>
         <button>Buat Baru</button>
       </div>
-      {true ? (
+      {dataMemo.length ? (
           <Table
             columns={columns}
             data={dataMemo}

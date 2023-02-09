@@ -7,3 +7,14 @@ export interface Outlet {
 }
 
 export type OutletListType = Outlet[]
+export interface Customer {
+    id: number;
+    name: string;
+    address: string;
+    gender: "L" | "P";
+    contact: string;
+    outlet_id: number;
+    created_at: Date;
+}
+
+export type CustomerListType = Customer[]
