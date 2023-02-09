@@ -8,8 +8,19 @@ import { useNavigate } from "react-router-dom";
 //   UilAngleLeft,
 // } from "@iconscout/react-unicons";
 import { useTable, useFilters, useSortBy, usePagination } from "react-table";
+import '@/styles/table.scss'
 
-export default function Table({ columns, data, filterInput, filterColumn } : {columns: any, data: any, filterInput: string, filterColumn: string}) {
+export default function Table({
+  columns,
+  data,
+  filterInput,
+  filterColumn,
+}: {
+  columns: any;
+  data: any;
+  filterInput: string;
+  filterColumn: string;
+}) {
   const navigate = useNavigate();
 
   // Table component logic and UI come here
@@ -33,12 +44,12 @@ export default function Table({ columns, data, filterInput, filterColumn } : {co
     setFilter(filterColumn, value);
   }, [filterInput]);
 
-  const rowClickHandler = (id:number) => {
+  const rowClickHandler = (id: number) => {
     // navigate(id);
   };
 
   return (
-    <>
+    <div className="fillTable">
       <table
         {...getTableProps()}
         className=" border-collapse overflow-auto rounded-xl borderin bg-white text-sm w-full text-left"
@@ -99,7 +110,11 @@ export default function Table({ columns, data, filterInput, filterColumn } : {co
         </tbody>
       </table>
       <div className="flex gap-3 items-center justify-end mt-6 mb-2 mx-2 paginasiNav">
-        <button disabled={!canPreviousPage} onClick={() => previousPage()}>
+        <button
+          disabled={!canPreviousPage}
+          onClick={() => previousPage()}
+          className={`${!canPreviousPage && "disableArrow"}`}
+        >
           {/* <Icon
             icon="cil:chevron-circle-left-alt"
             width="28"
@@ -123,7 +138,11 @@ export default function Table({ columns, data, filterInput, filterColumn } : {co
           <span className="text-blue-700">{pageIndex + 1}</span> dari{" "}
           {pageOptions.length}
         </p>
-        <button disabled={!canNextPage} onClick={() => nextPage()}>
+        <button
+          disabled={!canNextPage}
+          onClick={() => nextPage()}
+          className={`${!canNextPage && "disableArrow"}`}
+        >
           {/* <Icon
             icon="cil:chevron-circle-right-alt"
             width="28"
@@ -142,6 +161,6 @@ export default function Table({ columns, data, filterInput, filterColumn } : {co
           {">"}
         </button>
       </div>
-    </>
+    </div>
   );
 }

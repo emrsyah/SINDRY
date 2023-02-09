@@ -1,0 +1,67 @@
+$primary: #646cff;
+$primaryB: #1a1a1a;
+$primaryB2: #323232;
+
+.emptyTable {
+  margin: 16px 0;
+  table {
+    // background: white;
+    font-size: small;
+    width: 100%;
+    background: $primaryB;
+    text-align: left;
+    border-radius: 6px 6px 0 0;
+    padding: 6px;
+  }
+  p {
+    font-size: small;
+    text-align: center;
+    opacity: 90%;
+    font-weight: 500;
+    background: $primaryB2;
+    padding: 8px;
+  }
+}
+
+// border-collapse overflow-auto rounded-xl borderin bg-white text-sm w-full text-left
+.fillTable {
+  table {
+    margin: 24px 0;
+    font-size: small;
+    width: 100%;
+    text-align: left;
+    border-radius: 6px 6px 0 0;
+    background: $primaryB;
+    thead {
+      tr {
+        th {
+          font-weight: 600;
+          padding: 12px;
+        }
+      }
+    }
+    // border-y-[1px] font-medium border-gray-300 cursor-pointer hover:bg-blue-50
+    tbody {
+      background: $primaryB2;
+      tr {
+        font-weight: 500;
+        td {
+          padding: 8px;
+        }
+      }
+    }
+  }
+}
+
+.paginasiNav {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  button {
+    font-size: small;
+  }
+  .disableArrow {
+    opacity: 40%;
+  }
+}

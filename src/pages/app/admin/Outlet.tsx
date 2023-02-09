@@ -68,18 +68,14 @@ const Outlet = () => {
         <button>Buat Baru</button>
       </div>
       {true ? (
-        <div className="fillTable">
           <Table
             columns={columns}
             data={dataMemo}
             filterColumn="name"
             filterInput=""
           />
-        </div>
       ) : (
-        <div className="emptyTable">
           <EmptyTable columns={columns} />
-        </div>
       )}
     </div>
   );

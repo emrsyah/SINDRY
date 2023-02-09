@@ -1,8 +1,10 @@
 import React from "react";
+import '@/styles/table.scss'
+
 
 function EmptyTable({ columns }: { columns: any }) {
   return (
-    <>
+    <div className="emptyTable">
       <table >
         <thead>
           <tr>
@@ -15,7 +17,7 @@ function EmptyTable({ columns }: { columns: any }) {
         </thead>
       </table>
       <p>Belum Ada Data</p>
-    </>
+    </div>
   );
 }
 
