@@ -98,7 +98,7 @@ export default function Table({ columns, data, filterInput, filterColumn } : {co
           })}
         </tbody>
       </table>
-      <div className="flex gap-3 items-center justify-end mt-6 mb-2 mx-2">
+      <div className="flex gap-3 items-center justify-end mt-6 mb-2 mx-2 paginasiNav">
         <button disabled={!canPreviousPage} onClick={() => previousPage()}>
           {/* <Icon
             icon="cil:chevron-circle-left-alt"

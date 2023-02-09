@@ -1,8 +1,29 @@
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
 import "@/styles/adminOutlet.scss";
 import EmptyTable from "@/components/EmptyTable";
+import { connectionSql } from "@/sqlConnect";
+import { useState } from "react";
+import { OutletListType } from "@/dataStructure";
+import Table from "@/components/Table";
+import dayjs from "dayjs";
 
 const Outlet = () => {
+  const [outlets, setOutlets] = useState<OutletListType[]>([]);
+
+  useEffect(() => {
+    connectionSql.connect();
+    var stateSql = "SELECT * FROM outlets";
+    connectionSql.query(stateSql, (err, results, fields) => {
+      if (err) console.error(err);
+      else {
+        console.log(results);
+        setOutlets(results);
+      }
+    });
+  }, []);
+
+  const dataMemo = useMemo(() => outlets, [outlets]);
+
   const columns = useMemo(
     () => [
       {
@@ -13,15 +34,15 @@ const Outlet = () => {
         // ),
       },
       {
-        Header: "Harga",
-        accessor: "price",
+        Header: "Lokasi",
+        accessor: "address",
         // Cell: ({ cell: { value } }) => (
         //   <p className={`text-[13px]`}>{rupiahConverter(value)}</p>
         // ),
       },
       {
-        Header: "Tipe",
-        accessor: "desc",
+        Header: "Kontak",
+        accessor: "contact",
         // Cell: ({ cell: { value } }) => (
         //   <p
         //     className={`lg:max-w-[300px] truncate md:max-w-[160px] max-w-[90px]`}
@@ -31,12 +52,11 @@ const Outlet = () => {
         // ),
       },
       {
-        Header: "Outlet",
-        accessor: "active",
-      },
-      {
-        Header: "Ditambahkan",
-        accessor: "tanggal",
+        Header: "Ditambahkan Pada",
+        accessor: "created_at",
+        Cell: ({ cell: { value } }: { cell: { value: Date } }) => (
+          <>{dayjs(value).format("DD MMM")}</>
+        ),
       },
     ],
     []
@@ -47,9 +67,20 @@ const Outlet = () => {
         <h2>Outlet</h2>
         <button>Buat Baru</button>
       </div>
-      <div className="emptyTable">
-        <EmptyTable columns={columns} />
-      </div>
+      {true ? (
+        <div className="fillTable">
+          <Table
+            columns={columns}
+            data={dataMemo}
+            filterColumn="name"
+            filterInput=""
+          />
+        </div>
+      ) : (
+        <div className="emptyTable">
+          <EmptyTable columns={columns} />
+        </div>
+      )}
     </div>
   );
 };

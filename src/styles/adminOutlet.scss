@@ -1,5 +1,6 @@
 $primary: #646cff;
 $primaryB: #1a1a1a;
+$primaryB2: #323232;
 
 
 .outletTitle{
@@ -17,9 +18,7 @@ $primaryB: #1a1a1a;
 .emptyTable{
     table{
         margin: 16px 0;
-        border-bottom: 1px gray solid;
         // background: white;
-        background: $primaryB;
         font-size: small;
         width: 100%;
         text-align: left;
@@ -31,5 +30,47 @@ $primaryB: #1a1a1a;
         text-align: center;
         opacity: 90%;
         font-weight: 500;
+    }
+}
+
+// border-collapse overflow-auto rounded-xl borderin bg-white text-sm w-full text-left
+.fillTable{
+    table{
+        margin: 24px 0;
+        font-size: small;
+        width: 100%;
+        text-align: left;
+        thead{
+            background: $primaryB;
+            border-radius: 6px;
+            border-radius: 12px;
+            tr{
+                th{
+                    font-weight: 600;
+                    padding: 12px;
+                }
+            }
+        }
+        // border-y-[1px] font-medium border-gray-300 cursor-pointer hover:bg-blue-50
+        tbody{
+            background: $primaryB2;
+            tr{
+                font-weight: 500;   
+                td{
+                    padding: 8px;
+                }
+            }
+        }
+    }
+}
+
+
+.paginasiNav{
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px;
+    button{
+        font-size: small;
     }
 }
