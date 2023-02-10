@@ -10,7 +10,8 @@ $primaryB2: #323232;
     margin: 0 0 16px 0;
     button{
         background: $primary;
-        padding: 8px 16px;
+        padding: 6px 16px;
+        border-radius: 6px;
         font-weight: 600;
     }
 }
@@ -31,4 +32,18 @@ $primaryB2: #323232;
         padding: 10px;
         flex-grow: 1;
     }
+}
+
+.paidStatus{
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.cIcon{
+    color: rgb(0, 179, 0);
+}
+
+.xIcon{
+    color: rgb(255, 26, 26);
 }
