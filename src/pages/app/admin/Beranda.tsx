@@ -5,10 +5,11 @@ import { connectionSql } from "@/sqlConnect";
 import rupiahConverter from "../../../helpers/rupiahConverter";
 import { LineChart } from "@/components/LineChart";
 import { TransactionListType } from "../../../dataStructure";
+import { PieChart } from "@/components/PieChart";
 
 export interface ProductDashboard {
   name: string;
-  sold: number;
+  total_sales: number;
 }
 export interface OutletDashboard {
   name: string;
@@ -36,7 +37,7 @@ const Beranda = () => {
     const countTransaksiQ =
       "SELECT COUNT(*) AS jumlah FROM transactions WHERE MONTH(created_at)=MONTH(now())";
     const favoriteProductsQ =
-      "SELECT name, sold FROM products ORDER BY sold desc";
+      "SELECT name, sold AS total_sales FROM products ORDER BY total_sales desc";
     const outletSalesQ =
       "SELECT name, total_sales FROM outlets ORDER BY total_sales desc";
     const transactionsQ =
@@ -84,7 +85,7 @@ const Beranda = () => {
 
       <div className="berandaDiv2">
         <div className="berandaSub2 berandaSub2Stat">
-          <LineChart labels={["ha"]} submitted={transactions} />
+          <LineChart submitted={transactions} />
         </div>
         <div className="berandaSub2 berandaSub2List">
           <h4>Paket Laris 🏆</h4>
@@ -94,7 +95,7 @@ const Beranda = () => {
                 <p>{i + 1}</p>
                 <p>|</p>
                 <h5>{p.name}</h5>
-                <p>{p.sold} Terjual</p>
+                <p>{p.total_sales} Terjual</p>
               </div>
             ))}
             {/* <div className="berandaSub2ListItemDetail">
@@ -115,8 +116,14 @@ const Beranda = () => {
       </div>
 
       <div className="berandaDiv3">
-        <div className="berandaSub3">Pie Chart Paket</div>
-        <div className="berandaSub3">Pie Chart Outlet</div>
+        <div className="berandaSub3">
+          <h5>Penjualan Per Produk</h5>
+          <PieChart dataP={products} />
+        </div>
+        <div className="berandaSub3">
+          <h5>Penjualan Per Outlet</h5>
+          <PieChart dataP={outlets} />
+        </div>
       </div>
     </div>
   );

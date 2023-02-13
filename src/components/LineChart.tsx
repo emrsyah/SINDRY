@@ -9,7 +9,7 @@ import {
   Legend,
 } from "chart.js";
 import { Line } from "react-chartjs-2";
-import { TransactionListType } from '../dataStructure';
+import { TransactionListType } from "../dataStructure";
 
 ChartJS.register(
   CategoryScale,
@@ -21,14 +21,13 @@ ChartJS.register(
   Legend
 );
 
-
-export function LineChart({ labels, submitted } : {labels: string[], submitted: TransactionListType}) {
-  const firstFive = submitted
-  const arrayScore = firstFive.map((item)=>item.total)
-  const arrayLabel = firstFive.map((item)=>{
-    return `Transaksi ${item.id}`
-  })
-//   const min = arrayScore?.reduce((a: number, b:number) => Math.min(a, b));
+export function LineChart({ submitted }: { submitted: TransactionListType }) {
+  const firstFive = submitted;
+  const arrayScore = firstFive.map((item) => item.total);
+  const arrayLabel = firstFive.map((item) => {
+    return `Transaksi ${item.id}`;
+  });
+  //   const min = arrayScore?.reduce((a: number, b:number) => Math.min(a, b));
   const options = {
     responsive: true,
     maintainAspectRatio: false,
@@ -54,7 +53,7 @@ export function LineChart({ labels, submitted } : {labels: string[], submitted: 
       {
         label: "Transaksi",
         data: arrayScore.reverse(),
-        borderColor: "rgb(147, 51, 234)",
+        borderColor: "#646cff",
         backgroundColor: "rgba(147, 51, 234, 0.4)",
       },
     ],
