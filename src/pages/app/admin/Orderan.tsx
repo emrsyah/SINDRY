@@ -20,8 +20,6 @@ const Orderan = () => {
 
   useEffect(() => {
     connectionSql.connect();
-    var stateSql =
-      "SELECT products.*, outlets.name AS outlet_name FROM products JOIN outlets ON outlets.id = products.outlet_id";
     var tmpSql =
       "SELECT t.*, o.name AS outlet_name, u.name AS cashier_name, c.name AS customer_name FROM transactions t, outlets o, users u, customers c WHERE t.outlet_id = o.id AND t.cashier_id = u.id AND t.customer_id = c.id";
     connectionSql.query(tmpSql, (err, results, fields) => {
