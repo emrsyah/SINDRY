@@ -4,7 +4,8 @@ export const connectionSql = mysql.createConnection({
     host: "localhost",
     user: "root",
     password: undefined,
-    database: "sindry"
+    database: "sindry",
+    multipleStatements: true
 })
 
 // connection.connect()

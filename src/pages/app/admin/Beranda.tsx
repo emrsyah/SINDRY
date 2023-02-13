@@ -1,11 +1,29 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import "../../../styles/beranda.scss";
 import { connectionSql } from "@/sqlConnect";
+import rupiahConverter from "../../../helpers/rupiahConverter";
+import { LineChart } from "@/components/LineChart";
+import { TransactionListType } from "../../../dataStructure";
+
+export interface ProductDashboard {
+  name: string;
+  sold: number;
+}
+export interface OutletDashboard {
+  name: string;
+  total_sales: number;
+}
 
 const Beranda = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const [totalSales, setTotalSales] = useState<number>(0);
+  const [transactions, setTransactions] = useState<TransactionListType>([]);
+  const [totalTransactions, setTotalTransactions] = useState<number>(0);
+  const [products, setProducts] = useState<ProductDashboard[]>([]);
+  const [topProducts, setTopProducts] = useState<ProductDashboard[]>([]);
+  const [outlets, setOutlets] = useState<OutletDashboard[]>([]);
 
   useEffect(() => {
     const currentPath = location.pathname.split("/");
@@ -21,15 +39,27 @@ const Beranda = () => {
       "SELECT name, sold FROM products ORDER BY sold desc";
     const outletSalesQ =
       "SELECT name, total_sales FROM outlets ORDER BY total_sales desc";
+    const transactionsQ =
+      "SELECT * FROM transactions WHERE MONTH(created_at)=MONTH(now()) ORDER BY created_at DESC LIMIT 5";
+    // const transactionsPerWeek =
+    //   "SELECT WEEK(created_at) AS week, SUM(total) AS weekly_total  FROM transactions WHERE MONTH(created_at) = MONTH(CURRENT_DATE()) AND YEAR(created_at) = YEAR(CURRENT_DATE()) GROUP BY week";
     // const countTransaksiQ = "SELECT * FROM transactions WHERE MONTH(order_date)=MONTH(now())"
-    connectionSql.query(outletSalesQ, (err, results, fields) => {
-      if (err) console.error(err);
-      else {
-        console.log(results);
-        // setProducts(results);
-        // setTransactions(results);
+    connectionSql.query(
+      `${totalQ}; ${countTransaksiQ}; ${favoriteProductsQ}; ${outletSalesQ}; ${transactionsQ};`,
+      (err, results, fields) => {
+        if (err) console.error(err);
+        else {
+          // console.log(results[0][0].total)
+          const top3 = results[2].slice(0, 3);
+          setTotalSales(results[0][0].total);
+          setTotalTransactions(results[1][0].jumlah);
+          setProducts(results[2]);
+          setTopProducts(top3);
+          setOutlets(results[3]);
+          setTransactions(results[4]);
+        }
       }
-    });
+    );
   }, []);
   return (
     <div className="container">
@@ -40,30 +70,34 @@ const Beranda = () => {
       <div className="berandaDiv1">
         <div className="berandaSub1">
           <h5>Total Penjualan</h5>
-          <h4>Rp 120.000</h4>
+          <h4>{rupiahConverter(totalSales)}</h4>
         </div>
         <div className="berandaSub1">
           <h5>Jumlah Transaksi</h5>
-          <h4>17</h4>
+          <h4>{totalTransactions}</h4>
         </div>
         <div className="berandaSub1">
           <h5>Paket Favorit</h5>
-          <h4>Cuci Kiloan</h4>
+          <h4>{products[0]?.name}</h4>
         </div>
       </div>
 
       <div className="berandaDiv2">
-        <div className="berandaSub2 berandaSub2Stat">Ini Statistik</div>
+        <div className="berandaSub2 berandaSub2Stat">
+          <LineChart labels={["ha"]} submitted={transactions} />
+        </div>
         <div className="berandaSub2 berandaSub2List">
           <h4>Paket Laris 🏆</h4>
           <div className="berandaSub2ListItem">
-            <div className="berandaSub2ListItemDetail">
-              <p>1</p>
-              <p>|</p>
-              <h5>Cuci Kiloan</h5>
-              <p>23 Terjual</p>
-            </div>
-            <div className="berandaSub2ListItemDetail">
+            {topProducts.map((p, i) => (
+              <div className="berandaSub2ListItemDetail">
+                <p>{i + 1}</p>
+                <p>|</p>
+                <h5>{p.name}</h5>
+                <p>{p.sold} Terjual</p>
+              </div>
+            ))}
+            {/* <div className="berandaSub2ListItemDetail">
               <p>2</p>
               <p>|</p>
               <h5>Cuci Kiloan</h5>
@@ -74,7 +108,7 @@ const Beranda = () => {
               <p>|</p>
               <h5>Cuci Kiloan</h5>
               <p>17 Terjual</p>
-            </div>
+            </div> */}
           </div>
           <button>Lihat Lainnya</button>
         </div>
