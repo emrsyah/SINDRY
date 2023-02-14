@@ -3,6 +3,7 @@ export interface Outlet {
   name: string;
   address: string;
   contact: string;
+  total_sales: number;
   created_at: Date;
 }
 

@@ -9,6 +9,7 @@ import Orderan from './pages/app/admin/Orderan';
 import Produk from './pages/app/admin/Produk';
 import Pelanggan from './pages/app/admin/Pelanggan';
 import Outlet from './pages/app/admin/Outlet';
+import OutletDetail from './pages/app/admin/OutletDetail';
 
 
 const App = () => {
@@ -25,6 +26,7 @@ const App = () => {
             <Route path='produk' element={<Produk />} />
             <Route path='pelanggan' element={<Pelanggan />} />
             <Route path='outlet' element={<Outlet />} />
+            <Route path='outlet/:id' element={<OutletDetail />} />
           </Route>
         </Route>
       </Routes>

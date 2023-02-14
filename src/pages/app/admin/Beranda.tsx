@@ -26,6 +26,8 @@ const Beranda = () => {
   const [topProducts, setTopProducts] = useState<ProductDashboard[]>([]);
   const [outlets, setOutlets] = useState<OutletDashboard[]>([]);
 
+  
+
   useEffect(() => {
     const currentPath = location.pathname.split("/");
     if (currentPath.length < 4) {

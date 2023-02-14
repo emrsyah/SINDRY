@@ -45,7 +45,8 @@ export default function Table({
   }, [filterInput]);
 
   const rowClickHandler = (id: number) => {
-    // navigate(id);
+    navigate(id.toString());
+    // console.log(id)
   };
 
   return (
