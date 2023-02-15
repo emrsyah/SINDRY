@@ -28,6 +28,7 @@ export interface Product {
   price: number;
   created_at: Date;
   outlet_name: string;
+  sold: number,
 }
 
 export type ProductListType = Product[];
@@ -63,3 +64,31 @@ export const genderOptions: Gender[] = [
   { label: "Laki-laki", value: "L" },
   { label: "Perempuan", value: "P" },
 ];
+
+export interface ProductType {
+  label: "Kiloan" | "Selimut" | "Kaos" | "Bed Cover" | "Lainnya";
+  value: "kiloan" | "selimut" | "kaos" | "bed_cover" | "lainnya";
+}
+
+export const productTypeOptions: ProductType[] = [
+  {
+    label: "Kiloan",
+    value: "kiloan"
+  },
+  {
+    label: "Selimut",
+    value: "selimut"
+  },
+  {
+    label: "Kaos",
+    value: "kaos"
+  },
+  {
+    label: "Bed Cover",
+    value: "bed_cover"
+  },
+  {
+    label: "Lainnya",
+    value: "lainnya"
+  },
+]
