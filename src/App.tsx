@@ -7,10 +7,12 @@ import AdminLayout from './pages/app/admin/AdminLayout';
 import Beranda from './pages/app/admin/Beranda';
 import Orderan from './pages/app/admin/Orderan';
 import Produk from './pages/app/admin/Produk';
-import Pelanggan from './pages/app/admin/Pelanggan';
+import Pelanggan from './pages/app/admin/Pelanggan/Pelanggan';
 import Outlet from './pages/app/admin/Outlet/Outlet';
 import OutletDetail from './pages/app/admin/Outlet/OutletDetail';
 import OutletNew from './pages/app/admin/Outlet/OutletNew';
+import PelangganDetail from './pages/app/admin/Pelanggan/PelangganDetail';
+import PelangganNew from './pages/app/admin/Pelanggan/PelangganNew';
 
 
 const App = () => {
@@ -26,6 +28,8 @@ const App = () => {
             <Route path='orderan' element={<Orderan />} />
             <Route path='produk' element={<Produk />} />
             <Route path='pelanggan' element={<Pelanggan />} />
+            <Route path='pelanggan/:id' element={<PelangganDetail />} />
+            <Route path='pelanggan/new' element={<PelangganNew />} />
             <Route path='outlet' element={<Outlet />} />
             <Route path='outlet/new' element={<OutletNew />} />
             <Route path='outlet/:id' element={<OutletDetail />} />

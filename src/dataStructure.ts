@@ -52,3 +52,14 @@ export interface Transaction {
 }
 
 export type TransactionListType = Transaction[];
+
+
+export interface Gender {
+  label: "Laki-laki" | "Perempuan";
+  value: "L" | "P";
+}
+
+export const genderOptions: Gender[] = [
+  { label: "Laki-laki", value: "L" },
+  { label: "Perempuan", value: "P" },
+];

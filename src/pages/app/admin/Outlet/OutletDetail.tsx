@@ -1,6 +1,5 @@
 import { connectionSql } from "@/sqlConnect";
-import React, { useEffect, useState } from "react";
-import { UilStoreAlt } from "@iconscout/react-unicons";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import "@/styles/adminDetail.scss";
 import { Outlet } from "@/dataStructure";

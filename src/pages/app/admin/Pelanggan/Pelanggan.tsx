@@ -6,6 +6,7 @@ import { CustomerListType } from "@/dataStructure";
 import dayjs from "dayjs";
 import Table from "@/components/Table";
 import EmptyTable from "@/components/EmptyTable";
+import { Link } from "react-router-dom";
 
 const Pelanggan = () => {
   const [customers, setCustomers] = useState<CustomerListType>([]);
@@ -17,7 +18,6 @@ const Pelanggan = () => {
   };
 
   useEffect(() => {
-    // connectionSql.connect();
     var stateSql =
       "SELECT customers.*, outlets.name AS outlet_name FROM customers JOIN outlets ON outlets.id = customers.outlet_id";
     connectionSql.query(stateSql, (err, results, fields) => {
@@ -47,7 +47,9 @@ const Pelanggan = () => {
       {
         Header: "Outlet",
         accessor: "outlet_name",
-        Cell: ({ cell: { value } }: { cell: { value: string } }) => <span className="primaryC">{value}</span>,
+        Cell: ({ cell: { value } }: { cell: { value: string } }) => (
+          <span className="primaryC">{value}</span>
+        ),
       },
       {
         Header: "Ditambahkan Pada",
@@ -64,7 +66,9 @@ const Pelanggan = () => {
     <div>
       <div className="outletTitle">
         <h2>Pelanggan</h2>
-        <button>Tambah Baru</button>
+        <button>
+          <Link to={"new"}>Buat Baru</Link>
+        </button>{" "}
       </div>
       <div className="filterInput">
         <input
