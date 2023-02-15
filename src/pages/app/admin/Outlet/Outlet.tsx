@@ -6,6 +6,7 @@ import { useState } from "react";
 import { OutletListType } from "@/dataStructure";
 import Table from "@/components/Table";
 import dayjs from "dayjs";
+import { Link } from "react-router-dom";
 
 const Outlet = () => {
   const [outlets, setOutlets] = useState<OutletListType[]>([]);
@@ -17,7 +18,7 @@ const Outlet = () => {
   };
 
   useEffect(() => {
-    connectionSql.connect();
+    // connectionSql.connect();
     var stateSql = "SELECT * FROM outlets";
     connectionSql.query(stateSql, (err, results, fields) => {
       if (err) console.error(err);
@@ -71,7 +72,9 @@ const Outlet = () => {
     <div className="">
       <div className="outletTitle">
         <h2>Outlet</h2>
-        <button>Buat Baru</button>
+        <button>
+          <Link to={"new"}>Buat Baru</Link>
+        </button>
       </div>
       <div className="filterInput">
         <input

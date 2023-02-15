@@ -19,7 +19,7 @@ const Orderan = () => {
   };
 
   useEffect(() => {
-    connectionSql.connect();
+    // connectionSql.connect();
     var tmpSql =
       "SELECT t.*, o.name AS outlet_name, u.name AS cashier_name, c.name AS customer_name FROM transactions t, outlets o, users u, customers c WHERE t.outlet_id = o.id AND t.cashier_id = u.id AND t.customer_id = c.id";
     connectionSql.query(tmpSql, (err, results, fields) => {

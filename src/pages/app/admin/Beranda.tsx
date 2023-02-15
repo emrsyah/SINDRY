@@ -33,7 +33,7 @@ const Beranda = () => {
     if (currentPath.length < 4) {
       navigate("beranda");
     }
-    connectionSql.connect();
+    // connectionSql.connect();
     const totalQ =
       "SELECT SUM(total) AS total FROM transactions WHERE MONTH(created_at)=MONTH(now())";
     const countTransaksiQ =

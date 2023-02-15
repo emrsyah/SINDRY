@@ -5,7 +5,7 @@ import { useParams } from "react-router-dom";
 import "@/styles/adminDetail.scss";
 import { Outlet } from "@/dataStructure";
 import dayjs from "dayjs";
-import rupiahConverter from "../../../helpers/rupiahConverter";
+import rupiahConverter from "../../../../helpers/rupiahConverter";
 import { useForm } from "react-hook-form";
 
 const OutletDetail = () => {
@@ -15,7 +15,7 @@ const OutletDetail = () => {
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    connectionSql.connect();
+    // connectionSql.connect();
     const sqlSt = `SELECT * FROM outlets WHERE id = ${id}`;
     connectionSql.query(sqlSt, (err, results, fields) => {
       if (err) console.error(err);
@@ -31,7 +31,7 @@ const OutletDetail = () => {
 
   const submitHandler = handleSubmit((data) => {
     const updateSt = `UPDATE outlets SET name = '${data.name}', address = '${data.address}', contact = '${data.contact}' WHERE id = ${id}`;
-    connectionSql.connect();
+    // connectionSql.connect();
     console.log(updateSt)
     connectionSql.query(updateSt, (err, results, fields) => {
       if (err) console.error(err);

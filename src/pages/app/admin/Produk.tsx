@@ -18,7 +18,7 @@ const Produk = () => {
   };
 
   useEffect(() => {
-    connectionSql.connect();
+    // connectionSql.connect();
     var stateSql =
       "SELECT products.*, outlets.name AS outlet_name FROM products JOIN outlets ON outlets.id = products.outlet_id";
     connectionSql.query(stateSql, (err, results, fields) => {

@@ -17,7 +17,7 @@ const Pelanggan = () => {
   };
 
   useEffect(() => {
-    connectionSql.connect();
+    // connectionSql.connect();
     var stateSql =
       "SELECT customers.*, outlets.name AS outlet_name FROM customers JOIN outlets ON outlets.id = customers.outlet_id";
     connectionSql.query(stateSql, (err, results, fields) => {
