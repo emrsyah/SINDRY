@@ -5,7 +5,7 @@ import Login from './pages/Login';
 import Layout from './pages/app/Layout';
 import AdminLayout from './pages/app/admin/AdminLayout';
 import Beranda from './pages/app/admin/Beranda';
-import Orderan from './pages/app/admin/Orderan';
+import Orderan from './pages/app/admin/Orderan/Orderan';
 import Produk from './pages/app/admin/Produk/Produk';
 import Pelanggan from './pages/app/admin/Pelanggan/Pelanggan';
 import Outlet from './pages/app/admin/Outlet/Outlet';
@@ -15,6 +15,7 @@ import PelangganDetail from './pages/app/admin/Pelanggan/PelangganDetail';
 import PelangganNew from './pages/app/admin/Pelanggan/PelangganNew';
 import ProdukNew from './pages/app/admin/Produk/ProdukNew';
 import ProdukDetail from './pages/app/admin/Produk/ProdukDetail';
+import OrderanDetail from './pages/app/admin/Orderan/OrderanDetail';
 
 
 const App = () => {
@@ -28,6 +29,7 @@ const App = () => {
             <Route index element={<Beranda />} />
             <Route path='beranda' element={<Beranda />} />
             <Route path='orderan' element={<Orderan />} />
+            <Route path='orderan/:id' element={<OrderanDetail />} />
             <Route path='produk' element={<Produk />} />
             <Route path='produk/:id' element={<ProdukDetail />} />
             <Route path='produk/new' element={<ProdukNew />} />
