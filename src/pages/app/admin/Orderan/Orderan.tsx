@@ -8,6 +8,7 @@ import EmptyTable from "@/components/EmptyTable";
 import { TransactionListType } from "../../../../dataStructure";
 import rupiahConverter from "../../../../helpers/rupiahConverter";
 import { UilCheckCircle, UilTimesCircle  } from '@iconscout/react-unicons'
+import transactionStatusConverter from "@/helpers/transactionStatusConverter";
 
 const Orderan = () => {
   const [transactions, setTransactions] = useState<TransactionListType>([]);
@@ -69,7 +70,7 @@ const Orderan = () => {
                 : ""
             }`}
           >
-            {value}
+            {transactionStatusConverter(value)}
           </span>
         ),
       },

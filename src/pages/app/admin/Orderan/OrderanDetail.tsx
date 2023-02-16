@@ -23,6 +23,7 @@ import {
   UilCheckCircle,
   UilTimesCircle,
 } from "@iconscout/react-unicons";
+import transactionStatusConverter from "@/helpers/transactionStatusConverter";
 
 const OrderanDetail = () => {
   const { id } = useParams();
@@ -125,7 +126,7 @@ const OrderanDetail = () => {
                 : ""
             }`}
           >
-            {transactions?.status}
+            {transactionStatusConverter(transactions!.status)}
           </p>
         </div>
       </div>
@@ -158,7 +159,7 @@ const OrderanDetail = () => {
                   : ""
               }`}
             >
-              {transactions?.status}
+            {transactionStatusConverter(transactions!.status)}
             </h5>
           </div>
           <div className="detailSubB">
