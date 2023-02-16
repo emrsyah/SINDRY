@@ -38,6 +38,7 @@ export interface Transaction {
   customer_id: number;
   created_at: Date;
   total: number;
+  sub_total: number;
   cashier_id: number;
   invoice_code: string;
   outlet_id: number;

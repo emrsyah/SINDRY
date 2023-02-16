@@ -236,7 +236,7 @@ const OrderanDetail = () => {
         <div className="detailFinal">
           <div className="detailSubB detailFinalSub">
             <p>Sub Total</p>
-            <h5>#{transactions?.invoice_code}</h5>
+            <h5>{rupiahConverter(transactions!.sub_total)}</h5>
           </div>
           <div className="detailSubB detailFinalSub">
             <p>Diskon</p>
