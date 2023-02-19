@@ -7,8 +7,9 @@ import Table from "@/components/Table";
 import EmptyTable from "@/components/EmptyTable";
 import { TransactionListType } from "../../../../dataStructure";
 import rupiahConverter from "../../../../helpers/rupiahConverter";
-import { UilCheckCircle, UilTimesCircle  } from '@iconscout/react-unicons'
+import { UilCheckCircle, UilTimesCircle } from "@iconscout/react-unicons";
 import transactionStatusConverter from "@/helpers/transactionStatusConverter";
+import { Link } from "react-router-dom";
 
 const Orderan = () => {
   const [transactions, setTransactions] = useState<TransactionListType>([]);
@@ -93,8 +94,8 @@ const Orderan = () => {
               </>
             ) : (
               <>
-              <UilTimesCircle size="18" className="xIcon" />
-              <p>Belum</p>
+                <UilTimesCircle size="18" className="xIcon" />
+                <p>Belum</p>
               </>
             )}
           </span>
@@ -115,7 +116,9 @@ const Orderan = () => {
     <div>
       <div className="outletTitle">
         <h2>Orderan</h2>
-        <button>Tambah Baru</button>
+        <button>
+          <Link to={"new"}>Buat Baru</Link>
+        </button>
       </div>
       <div className="filterInput">
         <input
