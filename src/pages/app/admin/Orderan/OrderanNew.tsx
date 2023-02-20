@@ -13,27 +13,47 @@ import { connectionSql } from "@/sqlConnect";
 import { useSearchParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { Product } from "../../../../dataStructure";
+import rupiahConverter from "../../../../helpers/rupiahConverter";
+import { UilTrashAlt } from "@iconscout/react-unicons";
+import { inputRupiahFormatted } from "@/helpers/inputRupiahFormatter";
+
+interface AddedProductProps extends Product {
+  quantity: number;
+}
+
+interface OrderanNewProps extends Customer, Transaction {}
 
 const OrderanNew = () => {
   const [selectedGender, setSelectedGender] = useState<Gender>(
     genderOptions[0]
   );
 
-  const {
-    register: registerCustomer,
-    handleSubmit: handleCustomer,
-    setValue: setValCustomer,
-  } = useForm<Customer>();
-  const { register: registerTransaction, handleSubmit: handleTransaction } =
-    useForm<Transaction>();
+  // const {
+  //   register: registerCustomer,
+  //   handleSubmit: handleCustomer,
+  //   setValue: setValCustomer,
+  // } = useForm<Customer>();
+  // const { register: registerTransaction, handleSubmit: handleTransaction } =
+  //   useForm<Transaction>();
+
+  const { register, handleSubmit, getValues, setValue } =
+    useForm<OrderanNewProps>();
 
   const [outlets, setOutlets] = useState<OutletListType>([]);
   const [selectedOutlet, setSelectedOutlet] = useState<Outlet>();
   const [products, setProducts] = useState<ProductListType>([]);
+  const [filteredProducts, setFilteredProducts] = useState<ProductListType>([]);
   const [customers, setCustomers] = useState<CustomerListType>([]);
-  const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
+  const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(
+    null
+  );
   const [params, setParams] = useSearchParams();
-  const [selectedProduct, setSelectedProduct] = useState<Product>();
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [addedProducts, setAddedProducts] = useState<AddedProductProps[]>([]);
+  const [subTotal, setSubTotal] = useState<number>(0);
+  const [taxes, setTaxes] = useState<number>(0);
+  const [discount, setDiscount] = useState<number>(0);
+  const [additionalCost, setAdditionalCost] = useState<number>(0);
 
   const getAllOutlet = () => {
     const tmpSql = `SELECT * FROM outlets WHERE id = '${params.get("oid")}'`;
@@ -51,6 +71,7 @@ const OrderanNew = () => {
         setSelectedOutlet(results[0][0]);
         setCustomers(results[1]);
         setProducts(results[2]);
+        setFilteredProducts(results[2]);
       }
     });
   };
@@ -59,26 +80,67 @@ const OrderanNew = () => {
     getAllOutlet();
   }, []);
 
+  const getSubTotal = (): number => {
+    let subtotal = 0;
+    for (let i = 0; i < addedProducts.length; i++) {
+      subtotal += addedProducts[i].price * addedProducts[i].quantity;
+    }
+    return subtotal;
+  };
+
+  const getDiscount = (): number => {
+    return getSubTotal() * discount / 100
+  }
+
+  const getTaxes = (): number => {
+    return (getSubTotal() - getDiscount()) * taxes / 100
+  }
+
   const changeCustomerHandler = (data: Customer) => {
-    console.log(selectedCustomer)
+    console.log(selectedCustomer);
     if (data == null) {
       console.log("ini hapus");
-      setValCustomer("name", "");
-      setValCustomer("contact", "");
-      setValCustomer("address", "");
+      setValue("name", "");
+      setValue("contact", "");
+      setValue("address", "");
       setSelectedGender(genderOptions[0]);
-      setSelectedCustomer(null)
+      setSelectedCustomer(null);
     } else {
-      setValCustomer("name", data.name);
-      setValCustomer("contact", data.contact);
-      setValCustomer("address", data.address);
+      setValue("name", data.name);
+      setValue("contact", data.contact);
+      setValue("address", data.address);
       const selectedGender = genderOptions.filter(
         (g) => g.value == data.gender
       );
       setSelectedGender(selectedGender[0]);
-      setSelectedCustomer(data)
+      setSelectedCustomer(data);
     }
   };
+
+  const quantityChangeHandler = (n: number, id: number) => {
+    const tmpCurrent = [...addedProducts];
+    const itemToUpdate = tmpCurrent.find((p) => p.id == id);
+    itemToUpdate!.quantity += n;
+    setAddedProducts(tmpCurrent);
+  };
+
+  const deleteProductHandler = (id: number) => {
+    const tmpCurrent = [...addedProducts];
+    const deletedItem = tmpCurrent.find((p) => p.id === id);
+    const tmpNew = tmpCurrent.filter((p) => p.id !== id);
+    setAddedProducts(tmpNew);
+    setFilteredProducts((current) => [...current, deletedItem!]);
+  };
+
+  const addProductHandler = (data: Product) => {
+    const tmpNewFiltered = filteredProducts.filter((p) => p.id !== data.id);
+    setFilteredProducts(tmpNewFiltered);
+    setAddedProducts((current) => [...current, { ...data, quantity: 1 }]);
+  };
+
+  const submitHandler = handleSubmit((data) => {
+    console.log(data);
+  });
 
   return (
     <div>
@@ -86,7 +148,7 @@ const OrderanNew = () => {
         <h2>Buat Pesanan Baru</h2>
         <p>Outlet {selectedOutlet?.name}</p>
       </div>
-      <div className="oNewContainer">
+      <form onSubmit={submitHandler} className="oNewContainer">
         <div className="oNewL">
           <div className="cusSec">
             <div className="cusSecTitle">
@@ -113,15 +175,30 @@ const OrderanNew = () => {
             <div className="oFormContainer">
               <div className="formSub">
                 <h5>Nama</h5>
-                <input type="text" required {...registerCustomer("name")} disabled={selectedCustomer !== null} />
+                <input
+                  type="text"
+                  required
+                  {...register("name")}
+                  disabled={selectedCustomer !== null}
+                />
               </div>
               <div className="formSub">
                 <h5>Kontak</h5>
-                <input type="text" required {...registerCustomer("contact")} disabled={selectedCustomer !== null} />
+                <input
+                  type="text"
+                  required
+                  {...register("contact")}
+                  disabled={selectedCustomer !== null}
+                />
               </div>
               <div className="formSub">
                 <h5>Alamat</h5>
-                <input type="text" required {...registerCustomer("address")} disabled={selectedCustomer !== null} />
+                <input
+                  type="text"
+                  required
+                  {...register("address")}
+                  disabled={selectedCustomer !== null}
+                />
               </div>
               <div className="formSub">
                 <h5>Gender</h5>
@@ -151,10 +228,10 @@ const OrderanNew = () => {
             <div className="cusSecTitle">
               <h4 className="primaryC oSubTitle">Produk</h4>
               <Select
-                options={products}
-                value={selectedProduct}
+                options={filteredProducts}
+                value={null}
                 className="selectInput"
-                onChange={setSelectedProduct}
+                onChange={addProductHandler}
                 theme={(theme) => ({
                   ...theme,
                   colors: {
@@ -165,24 +242,77 @@ const OrderanNew = () => {
                     neutral0: "#323232",
                   },
                 })}
-              />{" "}
+              />
             </div>
+            {addedProducts.length ? (
+              <div className="productList">
+                {addedProducts.map((d, i) => (
+                  <div className="productItem">
+                    <div className="productItemTitle">{d.name}</div>
+                    <div className="productItemQuantity">
+                      <button
+                        disabled={d.quantity < 2}
+                        onClick={() => quantityChangeHandler(-1, d.id)}
+                      >
+                        -
+                      </button>
+                      <p>{d.quantity}</p>
+                      <button onClick={() => quantityChangeHandler(1, d.id)}>
+                        +
+                      </button>
+                    </div>
+                    <div className="productItemTotal">
+                      {rupiahConverter(d.price * d.quantity)}
+                    </div>
+                    <div
+                      onClick={() => deleteProductHandler(d.id)}
+                      className="productItemIcon"
+                    >
+                      <UilTrashAlt size="20" />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : null}
           </div>
 
           <div className="cusSec">
             <h4 className="primaryC oSubTitle">Lainnya</h4>
             <div className="oFormContainer">
               <div className="formSub">
-                <h5>Diskon</h5>
-                <input type="text" required />
+                <h5>
+                  Diskon <span>(dalam persen)</span>
+                </h5>
+                <input
+                  type="number"
+                  max={100}
+                  min={0}
+                  value={discount}
+                  onChange={(ev) => setDiscount(ev.target.valueAsNumber)}
+                  />
+              </div>
+              <div className="formSub">
+                <h5>
+                  Pajak <span>(dalam persen)</span>
+                </h5>
+                <input
+                  type="number"
+                  max={100}
+                  min={0}
+                  value={taxes}
+                  onChange={(ev) => setTaxes(ev.target.valueAsNumber)}
+                />
               </div>
               <div className="formSub">
                 <h5>Biaya Tambahan</h5>
-                <input type="text" required />
-              </div>
-              <div className="formSub">
-                <h5>Pajak</h5>
-                <input type="text" required />
+                <input
+                  type="number"
+                  defaultValue={0}
+                  // onKeyUp={(ev) => inputRupiahFormatted(ev.target)}
+                  // {...register("additional_cost")}
+                  value={additionalCost}
+                  onChange={(ev) => setAdditionalCost(ev.target.valueAsNumber)}
+                />
               </div>
             </div>
           </div>
@@ -193,29 +323,29 @@ const OrderanNew = () => {
             <div className="rincianContainer">
               <div className="rincianSub">
                 <h5>Subtotal</h5>
-                <p>Rp 0</p>
+                <p>{rupiahConverter(getSubTotal())}</p>
               </div>
               <div className="rincianSub">
                 <h5>Diskon</h5>
-                <p>Rp 0</p>
+                <p>-{rupiahConverter(getDiscount())}</p>
               </div>
               <div className="rincianSub">
                 <h5>Pajak</h5>
-                <p>Rp 0</p>
+                <p>+{rupiahConverter(getTaxes())}</p>
               </div>
               <div className="rincianSub">
                 <h5>Biaya Tambahan</h5>
-                <p>Rp 0</p>
+                <p>+{rupiahConverter(additionalCost)}</p>
               </div>
               <div className="rincianSubFinal">
                 <h5>Total</h5>
-                <p>Rp 0</p>
+                <p>{rupiahConverter(getSubTotal() - getDiscount() + getTaxes() + additionalCost)}</p>
               </div>
               <button>Tambah Pesanan</button>
             </div>
           </div>
         </div>
-      </div>
+      </form>
     </div>
   );
 };
