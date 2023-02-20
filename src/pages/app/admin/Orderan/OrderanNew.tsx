@@ -89,12 +89,12 @@ const OrderanNew = () => {
   };
 
   const getDiscount = (): number => {
-    return getSubTotal() * discount / 100
-  }
+    return (getSubTotal() * discount) / 100;
+  };
 
   const getTaxes = (): number => {
-    return (getSubTotal() - getDiscount()) * taxes / 100
-  }
+    return ((getSubTotal() - getDiscount()) * taxes) / 100;
+  };
 
   const changeCustomerHandler = (data: Customer) => {
     console.log(selectedCustomer);
@@ -140,6 +140,8 @@ const OrderanNew = () => {
 
   const submitHandler = handleSubmit((data) => {
     console.log(data);
+    console.log(addedProducts)
+    console.log({discount, taxes, additionalCost})
   });
 
   return (
@@ -288,8 +290,12 @@ const OrderanNew = () => {
                   max={100}
                   min={0}
                   value={discount}
-                  onChange={(ev) => setDiscount(ev.target.valueAsNumber)}
-                  />
+                  onChange={(ev) => {
+                    Number.isNaN(ev.target.valueAsNumber)
+                      ? setDiscount(0)
+                      : setDiscount(ev.target.valueAsNumber);
+                  }}
+                />
               </div>
               <div className="formSub">
                 <h5>
@@ -300,7 +306,11 @@ const OrderanNew = () => {
                   max={100}
                   min={0}
                   value={taxes}
-                  onChange={(ev) => setTaxes(ev.target.valueAsNumber)}
+                  onChange={(ev) => {
+                    Number.isNaN(ev.target.valueAsNumber)
+                      ? setTaxes(0)
+                      : setTaxes(ev.target.valueAsNumber);
+                  }}
                 />
               </div>
               <div className="formSub">
@@ -309,9 +319,12 @@ const OrderanNew = () => {
                   type="number"
                   defaultValue={0}
                   // onKeyUp={(ev) => inputRupiahFormatted(ev.target)}
-                  // {...register("additional_cost")}
                   value={additionalCost}
-                  onChange={(ev) => setAdditionalCost(ev.target.valueAsNumber)}
+                  onChange={(ev) => {
+                    Number.isNaN(ev.target.valueAsNumber)
+                      ? setAdditionalCost(0)
+                      : setAdditionalCost(ev.target.valueAsNumber);
+                  }}
                 />
               </div>
             </div>
@@ -339,7 +352,11 @@ const OrderanNew = () => {
               </div>
               <div className="rincianSubFinal">
                 <h5>Total</h5>
-                <p>{rupiahConverter(getSubTotal() - getDiscount() + getTaxes() + additionalCost)}</p>
+                <p>
+                  {rupiahConverter(
+                    getSubTotal() - getDiscount() + getTaxes() + additionalCost
+                  )}
+                </p>
               </div>
               <button>Tambah Pesanan</button>
             </div>
