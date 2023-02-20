@@ -117,7 +117,7 @@ const Orderan = () => {
       <div className="outletTitle">
         <h2>Orderan</h2>
         <button>
-          <Link to={"new"}>Buat Baru</Link>
+          <Link to={"select-outlet"}>Buat Baru</Link>
         </button>
       </div>
       <div className="filterInput">

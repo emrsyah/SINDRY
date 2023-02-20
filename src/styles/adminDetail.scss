@@ -316,3 +316,39 @@ $primaryB2: #323232;
     font-size: 20px !important;
   }
 }
+
+.warner{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 48px;
+  background: #646cff90;
+  border-radius: 4px;
+  margin-bottom: 20px;
+  border: 2px solid $primary;
+  font-weight: 600;
+}
+
+.outletList{
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr; 
+  gap: 16px;
+  .outletItem{
+    padding: 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    @include containerBase();
+    .outletIcon{
+      height: 32px;
+      width: 32px;
+      border-radius: 50%;
+      background: #646cff90;
+      display: flex;
+      border: 2px solid $primary;
+      align-items: center;
+      justify-content: center;
+    }
+  }
+}

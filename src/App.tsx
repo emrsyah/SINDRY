@@ -17,6 +17,7 @@ import ProdukNew from './pages/app/admin/Produk/ProdukNew';
 import ProdukDetail from './pages/app/admin/Produk/ProdukDetail';
 import OrderanDetail from './pages/app/admin/Orderan/OrderanDetail';
 import OrderanNew from './pages/app/admin/Orderan/OrderanNew';
+import OrderanSelectOutlet from './pages/app/admin/Orderan/OrderanSelectOutlet';
 
 
 const App = () => {
@@ -30,6 +31,7 @@ const App = () => {
             <Route index element={<Beranda />} />
             <Route path='beranda' element={<Beranda />} />
             <Route path='orderan' element={<Orderan />} />
+            <Route path='orderan/select-outlet' element={<OrderanSelectOutlet />} />
             <Route path='orderan/new' element={<OrderanNew />} />
             <Route path='orderan/:id' element={<OrderanDetail />} />
             <Route path='produk' element={<Produk />} />
