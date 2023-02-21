@@ -53,6 +53,12 @@ export interface Transaction {
   cashier_name: string;
 }
 
+export interface TransactionWithCustomer extends Transaction {
+  customer_name: string;
+  customer_address: string;
+  customer_contact: string;
+}
+
 export type TransactionListType = Transaction[];
 
 export interface TransactionDetail {

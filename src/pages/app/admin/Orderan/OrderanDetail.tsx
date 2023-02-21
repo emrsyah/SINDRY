@@ -11,6 +11,7 @@ import {
   Transaction,
   TransactionDetailType,
   CustomerListType,
+  TransactionWithCustomer,
 } from "@/dataStructure";
 import dayjs from "dayjs";
 import { useForm } from "react-hook-form";
@@ -28,22 +29,21 @@ import transactionStatusConverter from "@/helpers/transactionStatusConverter";
 const OrderanDetail = () => {
   const { id } = useParams();
   const [customerD, setCustomerD] = useState<Customer>();
-  const [outlets, setOutlets] = useState<OutletListType>([]);
-  const [selectedOutlet, setSelectedOutlet] = useState<Outlet>();
-  const [selectedGender, setSelectedGender] = useState(genderOptions[0]);
-  const [transactions, setTransactions] = useState<Transaction>();
+  // const [outlets, setOutlets] = useState<OutletListType>([]);
+  // const [selectedOutlet, setSelectedOutlet] = useState<Outlet>();
+  // const [selectedGender, setSelectedGender] = useState(genderOptions[0]);
+  const [transactions, setTransactions] = useState<TransactionWithCustomer>();
   const [transactionItems, setTransactionItems] =
     useState<TransactionDetailType>([]);
-  const [customers, setCustomers] = useState<CustomerListType>([]);
+  // const [customers, setCustomers] = useState<CustomerListType>([]);
 
   const { register, handleSubmit } = useForm<Customer>();
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     // connectionSql.connect();
-    console.log(generateRandomId(8));
     const sqlSt = `SELECT * FROM customers WHERE id = ${id}`;
-    var txnSt = `SELECT t.*, o.name AS outlet_name, u.name AS cashier_name, c.name AS customer_name FROM transactions t, outlets o, users u, customers c WHERE t.outlet_id = o.id AND t.cashier_id = u.id AND t.customer_id = c.id AND t.id = ${id}`;
+    var txnSt = `SELECT t.*, o.name AS outlet_name, u.name AS cashier_name, c.name AS customer_name, c.address AS customer_address, c.contact AS customer_contact FROM transactions t, outlets o, users u, customers c WHERE t.outlet_id = o.id AND t.cashier_id = u.id AND t.customer_id = c.id AND t.id = ${id}`;
     const txnDetailSt = `SELECT td.*, p.name, p.price, p.price * td.quantity AS 'total' FROM transaction_details td, products p WHERE td.transaction_id = ${id} AND td.product_id = p.id`;
     const outletSt = "SELECT name AS label, id, id AS value FROM outlets";
     // ! KASIR MASIH SEMUA, BELUM PER OUTLET
@@ -56,23 +56,24 @@ const OrderanDetail = () => {
       (err, results, fields) => {
         if (err) console.error(err);
         else {
+          // console.log(results)
           const dataReturn: Customer = results[0][0];
           const outletReturn = results[1];
-          const selected = outletReturn.filter(
-            (obj: Outlet) => obj.id == dataReturn.outlet_id
-          )[0];
-          const genderSelected = genderOptions.filter(
-            (obj: Gender) => obj.value == dataReturn.gender
-          )[0];
+          // const selected = outletReturn.filter(
+          //   (obj: Outlet) => obj.id == dataReturn.outlet_id
+          // )[0];
+          // const genderSelected = genderOptions.filter(
+          //   (obj: Gender) => obj.value == dataReturn.gender
+          // )[0];
           // console.log(results[2])
           setTransactions(results[3][0]);
           console.log(results[3][0]);
           setTransactionItems(results[4]);
-          setCustomers(results[5]);
+          // setCustomers(results[5]);
           setCustomerD(dataReturn);
-          setOutlets(outletReturn);
-          setSelectedOutlet(selected);
-          setSelectedGender(genderSelected);
+          // setOutlets(outletReturn);
+          // setSelectedOutlet(selected);
+          // setSelectedGender(genderSelected);
           setLoading(false);
         }
       }
@@ -195,15 +196,15 @@ const OrderanDetail = () => {
             </div>
             <div className="detailSubB">
               <p>Nama</p>
-              <h5>{customerD?.name}</h5>
+              <h5>{transactions?.customer_name}</h5>
             </div>
             <div className="detailSubB">
               <p>Alamat</p>
-              <h5>{customerD?.address}</h5>
+              <h5>{transactions?.customer_address}</h5>
             </div>
             <div className="detailSubB">
               <p>Kontak</p>
-              <h5>{customerD?.contact}</h5>
+              <h5>{transactions?.customer_contact}</h5>
             </div>
           </div>
           <div className="detailSub">
