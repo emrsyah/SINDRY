@@ -9,8 +9,9 @@ ChartJS.register(ArcElement, Tooltip, Legend);
 export function PieChart({ dataP }: { dataP: ProductDashboard[] }) {
   const [opaqueColors, translucentColors] = generateRandomRGBAArrays(dataP.length, 0.3);
 //   console.log(dataP)
-  const arrayLabels = dataP.map(d=>d.name)
-  const arrayDatas = dataP.map(d=>d.total_sales)
+  const fiveFirst = dataP.slice(0, 5)
+  const arrayLabels = fiveFirst.map(d=>d.name)
+  const arrayDatas = fiveFirst.map(d=>d.total_sales)
   const data = {
     labels: arrayLabels,
     datasets: [

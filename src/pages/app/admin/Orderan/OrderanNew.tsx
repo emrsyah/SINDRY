@@ -127,7 +127,6 @@ const OrderanNew = () => {
       setSelectedGender(selectedGender[0]);
       setSelectedCustomer(data);
     }
-    nav("/app/a/orderan")
   };
 
   const quantityChangeHandler = (n: number, id: number) => {
@@ -239,6 +238,7 @@ const OrderanNew = () => {
         }
       });
     }
+    nav("/app/a/orderan")
 
     // console.log(arrTxnDetSt);
     // console.log(data);
