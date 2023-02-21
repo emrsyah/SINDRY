@@ -1,3 +1,5 @@
 Todos:
 1. Buat trigger di tabel outlet buat total Penjualan
 2. Buat tabel dan trigget buat ambil paket favorit dan track jumlahnya
+
+1. Invitation Code

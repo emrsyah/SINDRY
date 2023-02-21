@@ -10,12 +10,13 @@ import { useEffect } from "react";
 import { OutletListType } from "@/dataStructure";
 import { CustomerListType } from "@/dataStructure";
 import { connectionSql } from "@/sqlConnect";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, useNavigate } from 'react-router-dom';
 import { useForm } from "react-hook-form";
 import { Product } from "../../../../dataStructure";
 import rupiahConverter from "../../../../helpers/rupiahConverter";
 import { UilTrashAlt } from "@iconscout/react-unicons";
 import { inputRupiahFormatted } from "@/helpers/inputRupiahFormatter";
+import { generateRandomId } from "../../../../helpers/generateRandomId";
 
 interface AddedProductProps extends Product {
   quantity: number;
@@ -23,23 +24,27 @@ interface AddedProductProps extends Product {
 
 interface OrderanNewProps extends Customer, Transaction {}
 
+const paidStatusOptions = [
+  { value: 0, label: "Belum Dibayar" },
+  { value: 1, label: "Sudah Dibayar" },
+];
+
+const transactionStatusOptions = [
+  { value: "new", label: "Baru" },
+  { value: "on_process", label: "Diproses" },
+  { value: "finished", label: "Selesai" },
+  { value: "picked_up", label: "Diambil" },
+];
+
 const OrderanNew = () => {
+  const nav = useNavigate()
   const [selectedGender, setSelectedGender] = useState<Gender>(
     genderOptions[0]
   );
 
-  // const {
-  //   register: registerCustomer,
-  //   handleSubmit: handleCustomer,
-  //   setValue: setValCustomer,
-  // } = useForm<Customer>();
-  // const { register: registerTransaction, handleSubmit: handleTransaction } =
-  //   useForm<Transaction>();
-
   const { register, handleSubmit, getValues, setValue } =
     useForm<OrderanNewProps>();
 
-  const [outlets, setOutlets] = useState<OutletListType>([]);
   const [selectedOutlet, setSelectedOutlet] = useState<Outlet>();
   const [products, setProducts] = useState<ProductListType>([]);
   const [filteredProducts, setFilteredProducts] = useState<ProductListType>([]);
@@ -50,10 +55,15 @@ const OrderanNew = () => {
   const [params, setParams] = useSearchParams();
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [addedProducts, setAddedProducts] = useState<AddedProductProps[]>([]);
-  const [subTotal, setSubTotal] = useState<number>(0);
   const [taxes, setTaxes] = useState<number>(0);
   const [discount, setDiscount] = useState<number>(0);
   const [additionalCost, setAdditionalCost] = useState<number>(0);
+  const [selectedPaidStat, setSelectedPaidStat] = useState(
+    paidStatusOptions[0]
+  );
+  const [selectedTransactionStat, setSelectedTransactionStat] = useState(
+    transactionStatusOptions[0]
+  );
 
   const getAllOutlet = () => {
     const tmpSql = `SELECT * FROM outlets WHERE id = '${params.get("oid")}'`;
@@ -103,18 +113,21 @@ const OrderanNew = () => {
       setValue("name", "");
       setValue("contact", "");
       setValue("address", "");
+      setValue("id", -1);
       setSelectedGender(genderOptions[0]);
       setSelectedCustomer(null);
     } else {
       setValue("name", data.name);
       setValue("contact", data.contact);
       setValue("address", data.address);
+      setValue("id", data.id);
       const selectedGender = genderOptions.filter(
         (g) => g.value == data.gender
       );
       setSelectedGender(selectedGender[0]);
       setSelectedCustomer(data);
     }
+    nav("/app/a/orderan")
   };
 
   const quantityChangeHandler = (n: number, id: number) => {
@@ -138,10 +151,106 @@ const OrderanNew = () => {
     setAddedProducts((current) => [...current, { ...data, quantity: 1 }]);
   };
 
-  const submitHandler = handleSubmit((data) => {
-    console.log(data);
-    console.log(addedProducts)
-    console.log({discount, taxes, additionalCost})
+  const submitHandler = handleSubmit(async (data) => {
+    let cusId = data.id;
+    let txnId = -1;
+    const randomId = generateRandomId(8);
+    const invoiceCode = `ID-${randomId}`;
+    const subTotal = getSubTotal();
+    const totalFinal = subTotal - getDiscount() + getTaxes() + additionalCost;
+
+    // Add Customer If New
+    if (selectedCustomer === null) {
+      const addCusSql = `INSERT INTO customers (id, name, address, gender, contact, outlet_id, created_at) VALUES (NULL, '${
+        data.name
+      }', '${data.address}', '${selectedGender.value}', '${
+        data.contact
+      }', '${params.get("oid")}', current_timestamp())`;
+      console.log(addCusSql);
+      connectionSql.query(addCusSql, (err, results, fields) => {
+        if (err) console.error(err);
+        else {
+          // console.log(results)
+          // console.log(results.insertId)
+          cusId = results.insertId;
+          let tmpId = results.insertId;
+
+          // Add Transaction
+          const addTxnSql = `INSERT INTO transactions (id, customer_id, created_at, total, sub_total, cashier_id, invoice_code, outlet_id, additional_cost, discount, taxes, status, is_paid, deadline, paid_at) VALUES (NULL, '${tmpId}', current_timestamp(), '${totalFinal}', '${subTotal}', '2', '${invoiceCode}', '${params.get(
+            "oid"
+          )}', '${additionalCost}', '${discount}', '${taxes}', '${
+            selectedTransactionStat.value
+          }', '${
+            selectedPaidStat.value
+          }', 'current_timestamp()', 'current_timestamp()')`;
+          console.log(addTxnSql);
+          connectionSql.query(addTxnSql, (err, results, fields) => {
+            if (err) console.error(err);
+            else {
+              console.log(results);
+              txnId = results.insertId;
+              let tmpId = results.insertId;
+              // Add Transaction Detail
+              const arrTxnDetSt = addedProducts.map((d, i) => {
+                return `INSERT INTO transaction_details (id, transaction_id, product_id, quantity, description) VALUES (NULL, '${tmpId}', '${d.id}', '${d.quantity}', '')`;
+              });
+              const combinedTxnSt = arrTxnDetSt.join("; ");
+              console.log(arrTxnDetSt);
+              connectionSql.query(combinedTxnSt, (err, results, fields) => {
+                if (err) console.error(err);
+                else {
+                  console.log(results);
+                }
+              });
+            }
+          });
+        }
+      });
+    } else {
+      const addTxnSql = `INSERT INTO transactions (id, customer_id, created_at, total, sub_total, cashier_id, invoice_code, outlet_id, additional_cost, discount, taxes, status, is_paid, deadline, paid_at) VALUES (NULL, '${
+        selectedCustomer.id
+      }', current_timestamp(), '${totalFinal}', '${subTotal}', '2', '${invoiceCode}', '${params.get(
+        "oid"
+      )}', '${additionalCost}', '${discount}', '${taxes}', '${
+        selectedTransactionStat.value
+      }', '${
+        selectedPaidStat.value
+      }', 'current_timestamp()', 'current_timestamp()')`;
+      console.log(addTxnSql);
+      connectionSql.query(addTxnSql, (err, results, fields) => {
+        if (err) console.error(err);
+        else {
+          console.log(results);
+          let tmpId = results.insertId;
+          console.log(tmpId);
+          txnId = results.insertId;
+          // Add Transaction Detail
+          const arrTxnDetSt = addedProducts.map((d, i) => {
+            return `INSERT INTO transaction_details (id, transaction_id, product_id, quantity, description) VALUES (NULL, '${tmpId}', '${d.id}', '${d.quantity}', '')`;
+          });
+          const combinedTxnSt = arrTxnDetSt.join("; ");
+          console.log(arrTxnDetSt);
+          connectionSql.query(combinedTxnSt, (err, results, fields) => {
+            if (err) console.error(err);
+            else {
+              console.log(results);
+            }
+          });
+        }
+      });
+    }
+
+    // console.log(arrTxnDetSt);
+    // console.log(data);
+    // console.log(addedProducts);
+    // console.log({
+    //   discount,
+    //   taxes,
+    //   additionalCost,
+    //   selectedPaidStat,
+    //   selectedTransactionStat,
+    // });
+    // const addTxnSql = ''
   });
 
   return (
@@ -253,13 +362,17 @@ const OrderanNew = () => {
                     <div className="productItemTitle">{d.name}</div>
                     <div className="productItemQuantity">
                       <button
+                        type="button"
                         disabled={d.quantity < 2}
                         onClick={() => quantityChangeHandler(-1, d.id)}
                       >
                         -
                       </button>
                       <p>{d.quantity}</p>
-                      <button onClick={() => quantityChangeHandler(1, d.id)}>
+                      <button
+                        type="button"
+                        onClick={() => quantityChangeHandler(1, d.id)}
+                      >
                         +
                       </button>
                     </div>
@@ -327,6 +440,26 @@ const OrderanNew = () => {
                   }}
                 />
               </div>
+              <div className="formSub">
+                <h5>Status</h5>
+                {/* <input type="text" required /> */}
+                <Select
+                  options={transactionStatusOptions}
+                  value={selectedTransactionStat}
+                  className="selectInput"
+                  onChange={setSelectedTransactionStat}
+                  theme={(theme) => ({
+                    ...theme,
+                    colors: {
+                      ...theme.colors,
+                      primary25: "#646cff",
+                      primary: "white",
+                      neutral80: "white",
+                      neutral0: "#323232",
+                    },
+                  })}
+                />
+              </div>
             </div>
           </div>
         </div>
@@ -358,6 +491,22 @@ const OrderanNew = () => {
                   )}
                 </p>
               </div>
+              <Select
+                options={paidStatusOptions}
+                value={selectedPaidStat}
+                className="selectInput"
+                onChange={setSelectedPaidStat}
+                theme={(theme) => ({
+                  ...theme,
+                  colors: {
+                    ...theme.colors,
+                    primary25: "#646cff",
+                    primary: "white",
+                    neutral80: "white",
+                    neutral0: "#323232",
+                  },
+                })}
+              />
               <button>Tambah Pesanan</button>
             </div>
           </div>
