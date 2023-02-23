@@ -87,7 +87,13 @@ export interface User {
 
 export type UserListType = User[]
 
-export const roleOptions = [
+
+export interface Role {
+  label: "Admin" | "Kasir" | "Pemilik";
+  value: "admin" | "cashier" | "owner";
+}
+
+export const roleOptions: Role[] = [
   { label: "Admin", value: "admin" },
   { label: "Kasir", value: "cashier" },
   { label: "Pemilik", value: "owner" },
