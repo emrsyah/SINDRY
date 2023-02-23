@@ -82,6 +82,12 @@ $primary: #646cff;
 
         }
 
+        .dividerSidebar{
+            width: 100%;
+            height: 3px;
+            background: #9ea3f830;
+        }
+
         .sidebarItemActive{
             background: #9ea3f830;
             color: $primary;

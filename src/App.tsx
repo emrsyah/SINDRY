@@ -18,6 +18,8 @@ import ProdukDetail from './pages/app/admin/Produk/ProdukDetail';
 import OrderanDetail from './pages/app/admin/Orderan/OrderanDetail';
 import OrderanNew from './pages/app/admin/Orderan/OrderanNew';
 import OrderanSelectOutlet from './pages/app/admin/Orderan/OrderanSelectOutlet';
+import Pengguna from './pages/app/admin/Pengguna/Pengguna';
+import PenggunaNew from './pages/app/admin/Pengguna/PenggunaNew';
 
 
 const App = () => {
@@ -43,6 +45,8 @@ const App = () => {
             <Route path='outlet' element={<Outlet />} />
             <Route path='outlet/new' element={<OutletNew />} />
             <Route path='outlet/:id' element={<OutletDetail />} />
+            <Route path='pengguna' element={<Pengguna />} />
+            <Route path='pengguna/new' element={<PenggunaNew />} />
           </Route>
         </Route>
       </Routes>

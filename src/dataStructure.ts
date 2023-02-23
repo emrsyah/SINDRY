@@ -74,6 +74,26 @@ export interface TransactionDetail {
 
 export type TransactionDetailType = TransactionDetail[]
 
+export interface User {
+  id: number;
+  name: string;
+  username: string;
+  password: string;
+  outlet_id: number;
+  role: "admin" | "cashier" | "owner";
+  created_at: Date;
+  outlet_name: string;
+}
+
+export type UserListType = User[]
+
+export const roleOptions = [
+  { label: "Admin", value: "admin" },
+  { label: "Kasir", value: "cashier" },
+  { label: "Pemilik", value: "owner" },
+];
+
+
 
 export interface Gender {
   label: "Laki-laki" | "Perempuan";

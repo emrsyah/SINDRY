@@ -6,6 +6,7 @@ import {
   UilUserSquare,
   UilStoreAlt,
   UilPlus,
+  UilUsersAlt ,
 } from "@iconscout/react-unicons";
 import { Link, useLocation } from "react-router-dom";
 
@@ -30,6 +31,10 @@ const sidebarItems = [
     path: "/app/a/outlet",
     name: "Outlet",
   },
+  // {
+  //   path: "/app/a/pengguna",
+  //   name: "Users",
+  // },
 ];
 
 const sidebarItemsAdmin = [
@@ -45,7 +50,7 @@ const getSidebarIcon = (name: string) => {
   else if (name == "Produk") return <UilTagAlt />;
   else if (name == "Pelanggan") return <UilUserSquare />;
   else if (name == "Outlet") return <UilStoreAlt />;
-  else if (name == "Pengguna") return <UilEstate />;
+  else if (name == "Pengguna") return <UilUsersAlt  />;
 };
 
 const SidebarAdmin = () => {
@@ -75,6 +80,13 @@ const SidebarAdmin = () => {
       {/* Button Transaksi Disini */}
       <div className="sidebarList">
         {sidebarItems.map((item, i) => (
+          <Link to={item.path} className={`sidebarItem ${extractLocation() === item.name ? "sidebarItemActive" : ""}`} key={i}>
+            {getSidebarIcon(item.name)}
+            <p>{item.name}</p>
+          </Link>
+        ))}
+        <div className="dividerSidebar"></div>
+        {sidebarItemsAdmin.map((item, i) => (
           <Link to={item.path} className={`sidebarItem ${extractLocation() === item.name ? "sidebarItemActive" : ""}`} key={i}>
             {getSidebarIcon(item.name)}
             <p>{item.name}</p>
