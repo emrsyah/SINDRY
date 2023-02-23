@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { roleOptions } from "../../../../dataStructure";
 import Select from "react-select";
 import sha1 from "sha1";
+import { toast } from "react-toastify";
 
 const PenggunaNew = () => {
   const [outlets, setOutlets] = useState<OutletListType>([]);
@@ -27,14 +28,28 @@ const PenggunaNew = () => {
   }, []);
 
   const submitHandler = handleSubmit((data) => {
-    const sha1Pass = sha1(data.password);
-    const addSt = `INSERT INTO users (id, name, username, password, outlet_id, role, created_at) VALUES (NULL, '${data.name}', '${data.username}', '${sha1Pass}', '${selectedOutlet?.id}', '${selectedRole.value}', current_timestamp())`;
-    console.log(addSt);
-    connectionSql.query(addSt, (err, results, fields) => {
+    // Check if user with that username exist
+    const checkSt = `SELECT * FROM users WHERE username =  '${data.username}'`;
+    connectionSql.query(checkSt, (err, results, fields) => {
       if (err) console.error(err);
       else {
-        console.log(results);
-        nav(-1);
+        // Return if there is one
+        if (results.length) {
+          toast.error("Akun dengan username tersebut sudah ada");
+          return;
+        }
+
+        // add kalo gak ada
+        const sha1Pass = sha1(data.password);
+        const addSt = `INSERT INTO users (id, name, username, password, outlet_id, role, created_at) VALUES (NULL, '${data.name}', '${data.username}', '${sha1Pass}', '${selectedOutlet?.id}', '${selectedRole.value}', current_timestamp())`;
+        console.log(addSt);
+        connectionSql.query(addSt, (err, results, fields) => {
+          if (err) console.error(err);
+          else {
+            console.log(results);
+            nav(-1);
+          }
+        });
       }
     });
   });
