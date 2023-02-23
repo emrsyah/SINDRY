@@ -248,6 +248,10 @@ const OrderanDetail = () => {
             <p>Pajak</p>
             <h5>{transactions?.taxes}%</h5>
           </div>
+          <div className="detailSubB detailFinalSub">
+            <p>Biaya Tambahan</p>
+            <h5>{rupiahConverter(transactions!.additional_cost)}</h5>
+          </div>
           <div className="detailSubB detailFinalSub lastTotal">
             <p>Total Akhir</p>
             <h5 className="primaryC">{rupiahConverter(transactions!.total)}</h5>

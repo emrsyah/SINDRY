@@ -35,7 +35,7 @@ const Beranda = () => {
     }
     // connectionSql.connect();
     const totalQ =
-      "SELECT SUM(total) AS total FROM transactions WHERE MONTH(created_at)=MONTH(now())";
+      "CALL get_monthly_total()";
     const countTransaksiQ =
       "SELECT COUNT(*) AS jumlah FROM transactions WHERE MONTH(created_at)=MONTH(now())";
     const favoriteProductsQ =
@@ -52,14 +52,15 @@ const Beranda = () => {
       (err, results, fields) => {
         if (err) console.error(err);
         else {
+          console.log(results)
           // console.log(results[0][0].total)
-          const top3 = results[2].slice(0, 3);
+          const top3 = results[3].slice(0, 3);
           setTotalSales(results[0][0].total);
-          setTotalTransactions(results[1][0].jumlah);
-          setProducts(results[2]);
+          setTotalTransactions(results[2][0].jumlah);
+          setProducts(results[3]);
           setTopProducts(top3);
-          setOutlets(results[3]);
-          setTransactions(results[4]);
+          setOutlets(results[4]);
+          setTransactions(results[5]);
         }
       }
     );
