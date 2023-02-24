@@ -173,8 +173,9 @@ const OrderanEdit = () => {
 
   const deleteProductHandler = (id: number) => {
     const tmpCurrent = [...addedProducts];
-    const deletedItem = tmpCurrent.find((p) => p.id === id);
-    const tmpNew = tmpCurrent.filter((p) => p.id !== id);
+    const deletedItem = tmpCurrent.find((p) => p.product_id ? p.product_id === id : p.id === id);
+    // console.log(deletedItem)
+    const tmpNew = tmpCurrent.filter((p) => p.product_id ? p.product_id !== id : p.id === id);
     setAddedProducts(tmpNew);
     setFilteredProducts((current) => [...current, deletedItem!]);
   };
@@ -194,20 +195,31 @@ const OrderanEdit = () => {
     const toSetProduct = newSelectedProduct.filter(
       (p) => typeof p.product_id === "number"
     );
-    const toSetProductIds = toSetProduct.map((p) => p.id);
+    const setProductSt = toSetProduct.map((p, i) => {
+      return `UPDATE transaction_details SET quantity = '${p.quantity}' WHERE id = '${p.id}'`;
+    });
+    const joinedSetProductSt = setProductSt.join("; ")
 
     // Find All Product That Need To Be Add (New Transacation Detail)
     const toAddProduct = newSelectedProduct.filter(
       (p) => typeof p.product_id !== "number"
     );
+    const addProductSt = toAddProduct.map((d, i) => {
+      return `INSERT INTO transaction_details (id, transaction_id, product_id, quantity, description) VALUES (NULL, '${id}', '${d.id}', '${d.quantity}', '')`;
+    });
+    const joinedAddProductSt = addProductSt.join("; ")
 
     // Find All Product That Need To Be Deleted (Delete Transacation Detail)
-    const toDeleteProduct = originalproducts.filter(
+    const toSetProductIds = toSetProduct.map((p) => p.id);
+    const toDeleteProductIds = originalproducts.filter(
       (p) => !toSetProductIds.includes(p.id)
-    );
+    ).map((p) => p.id);
+    const joinnedIdToDelete = toDeleteProductIds.join(", ")
+    const dltProductSt = `DELETE FROM transaction_details WHERE id IN (${joinnedIdToDelete})`
 
-    console.log(transactions);
-    console.log(selectedPaidStat.value);
+    console.log(toSetProduct)
+    console.log(toAddProduct)
+    console.log(toDeleteProductIds)
 
     const paidAt =
       selectedPaidStat.value == 0
@@ -220,12 +232,12 @@ const OrderanEdit = () => {
                      SET customer_id = '${selectedCustomer?.id}', discount = '${discount}', taxes = '${taxes}', additional_cost = '${additionalCost}', status = '${selectedTransactionStat.value}', sub_total = '${subTotal}', total = '${totalFinal}', is_paid = '${selectedPaidStat.value}', paid_at = '${paidAt}'
                      WHERE id = ${id}`;
 
-    connectionSql.query(updTxnSql, (err, results, fields) => {
-      if (err) console.error(err);
-      else {
-        console.log(results);
-      }
-    });
+    // connectionSql.query(updTxnSql, (err, results, fields) => {
+    //   if (err) console.error(err);
+    //   else {
+    //     console.log(results);
+    //   }
+    // });
 
     // // Add Customer If New
     // if (selectedCustomer === null) {
@@ -432,7 +444,7 @@ const OrderanEdit = () => {
                       {rupiahConverter(d.price * d.quantity)}
                     </div>
                     <div
-                      onClick={() => deleteProductHandler(d.id)}
+                      onClick={() => deleteProductHandler(d.product_id ? d.product_id : d.id)}
                       className="productItemIcon"
                     >
                       <UilTrashAlt size="20" />
