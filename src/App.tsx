@@ -23,6 +23,7 @@ import OrderanSelectOutlet from "./pages/app/admin/Orderan/OrderanSelectOutlet";
 import Pengguna from "./pages/app/admin/Pengguna/Pengguna";
 import PenggunaNew from "./pages/app/admin/Pengguna/PenggunaNew";
 import PenggunaDetail from "./pages/app/admin/Pengguna/PenggunaDetail";
+import OrderanEdit from "./pages/app/admin/Orderan/OrderanEdit";
 
 const App = () => {
   return (
@@ -43,6 +44,7 @@ const App = () => {
               />
               <Route path="orderan/new" element={<OrderanNew />} />
               <Route path="orderan/:id" element={<OrderanDetail />} />
+              <Route path="orderan/:id/edit" element={<OrderanEdit />} />
               <Route path="produk" element={<Produk />} />
               <Route path="produk/:id" element={<ProdukDetail />} />
               <Route path="produk/new" element={<ProdukNew />} />

@@ -1,6 +1,6 @@
 import { connectionSql } from "@/sqlConnect";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import "@/styles/adminDetail.scss";
 import {
   Customer,
@@ -15,8 +15,6 @@ import {
 } from "@/dataStructure";
 import dayjs from "dayjs";
 import { useForm } from "react-hook-form";
-import Select from "react-select";
-import { generateRandomId } from "@/helpers/generateRandomId";
 import rupiahConverter from "../../../../helpers/rupiahConverter";
 import {
   UilEditAlt,
@@ -46,7 +44,6 @@ const OrderanDetail = () => {
     var txnSt = `SELECT t.*, o.name AS outlet_name, u.name AS cashier_name, c.name AS customer_name, c.address AS customer_address, c.contact AS customer_contact FROM transactions t, outlets o, users u, customers c WHERE t.outlet_id = o.id AND t.cashier_id = u.id AND t.customer_id = c.id AND t.id = ${id}`;
     const txnDetailSt = `SELECT td.*, p.name, p.price, p.price * td.quantity AS 'total' FROM transaction_details td, products p WHERE td.transaction_id = ${id} AND td.product_id = p.id`;
     const outletSt = "SELECT name AS label, id, id AS value FROM outlets";
-    // ! KASIR MASIH SEMUA, BELUM PER OUTLET
     const cashierSt =
       "SELECT name AS label, id, id AS value FROM users WHERE role IN ('admin', 'cashier')";
     const customerSt = `SELECT c.name AS label, c.id, c.id AS value FROM customers c, transactions t WHERE t.outlet_id = c.outlet_id AND t.id = ${id}`;
@@ -97,10 +94,12 @@ const OrderanDetail = () => {
       <div className="outletTitle">
         <h2>Detail Orderan</h2>
         <div>
-          <button>
-            Edit
-            <UilEditAlt />
-          </button>
+          <Link to={"edit"}>
+            <button>
+              Edit
+              <UilEditAlt />
+            </button>
+          </Link>
           <button className="btnSecondary">
             Cetak Struk <UilPrint />
           </button>
@@ -160,7 +159,7 @@ const OrderanDetail = () => {
                   : ""
               }`}
             >
-            {transactionStatusConverter(transactions!.status)}
+              {transactionStatusConverter(transactions!.status)}
             </h5>
           </div>
           <div className="detailSubB">
@@ -231,7 +230,7 @@ const OrderanDetail = () => {
               {d.name}
             </h5>
             <h5 className="productQ">x{d.quantity}</h5>
-            <h5 className="productT">{rupiahConverter(d!.total)}</h5>
+            <h5 className="productT">{rupiahConverter(d.total!)}</h5>
             {/* <h5 className="productT">{rupiahConverter(d!.description)}</h5> */}
           </div>
         ))}
