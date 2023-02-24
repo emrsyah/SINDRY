@@ -1,9 +1,4 @@
-import {
-  Customer,
-  Gender,
-  Outlet,
-  TransactionDetailType,
-} from "@/dataStructure";
+import { Customer, Gender } from "@/dataStructure";
 import React, { useState } from "react";
 import {
   genderOptions,
@@ -20,8 +15,6 @@ import { useForm } from "react-hook-form";
 import { Product } from "../../../../dataStructure";
 import rupiahConverter from "../../../../helpers/rupiahConverter";
 import { UilTrashAlt } from "@iconscout/react-unicons";
-import { inputRupiahFormatted } from "@/helpers/inputRupiahFormatter";
-import { generateRandomId } from "../../../../helpers/generateRandomId";
 
 interface AddedProductProps extends Product {
   quantity: number;
@@ -53,8 +46,7 @@ const OrderanEdit = () => {
     useForm<OrderanNewProps>();
 
   const [transactions, setTransactions] = useState<Transaction>();
-  const [selectedOutlet, setSelectedOutlet] = useState<Outlet>();
-  const [products, setProducts] = useState<ProductListType>([]);
+  const [originalproducts, setOriginalProducts] = useState<ProductListType>([]);
   const [filteredProducts, setFilteredProducts] = useState<ProductListType>([]);
   const [customers, setCustomers] = useState<CustomerListType>([]);
   const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(
@@ -102,6 +94,9 @@ const OrderanEdit = () => {
         // Set Transaction Detail Related Data
         const txnDetailData: AddedProductProps[] = results[1];
         setAddedProducts(txnDetailData);
+        setOriginalProducts(txnDetailData);
+
+        console.log(txnDetailData);
 
         const selectedProductIds = txnDetailData.map((p) => p.product_id);
         const outletProduct: ProductListType = results[3];
@@ -191,102 +186,124 @@ const OrderanEdit = () => {
   };
 
   const submitHandler = handleSubmit(async (data) => {
-    let cusId = data.id;
-    let txnId = -1;
-    const randomId = generateRandomId(8);
-    const invoiceCode = `ID-${randomId}`;
+    const newSelectedProduct = addedProducts;
     const subTotal = getSubTotal();
     const totalFinal = subTotal - getDiscount() + getTaxes() + additionalCost;
 
-    // Add Customer If New
-    if (selectedCustomer === null) {
-      const addCusSql = `INSERT INTO customers (id, name, address, gender, contact, outlet_id, created_at) VALUES (NULL, '${data.name}', '${data.address}', '${selectedGender.value}', '${data.contact}', '${id}', current_timestamp())`;
-      console.log(addCusSql);
-      connectionSql.query(addCusSql, (err, results, fields) => {
-        if (err) console.error(err);
-        else {
-          // console.log(results)
-          // console.log(results.insertId)
-          cusId = results.insertId;
-          let tmpId = results.insertId;
+    // Find All Product That Need To Be Update (Same Transaction Detail)
+    const toSetProduct = newSelectedProduct.filter(
+      (p) => typeof p.product_id === "number"
+    );
+    const toSetProductIds = toSetProduct.map((p) => p.id);
 
-          // Add Transaction
-          const addTxnSql = `INSERT INTO transactions (id, customer_id, created_at, total, sub_total, cashier_id, invoice_code, outlet_id, additional_cost, discount, taxes, status, is_paid, deadline, paid_at) VALUES (NULL, '${tmpId}', current_timestamp(), '${totalFinal}', '${subTotal}', '2', '${invoiceCode}', '${params.get(
-            "oid"
-          )}', '${additionalCost}', '${discount}', '${taxes}', '${
-            selectedTransactionStat.value
-          }', '${
-            selectedPaidStat.value
-          }', 'current_timestamp()', 'current_timestamp()')`;
-          console.log(addTxnSql);
-          connectionSql.query(addTxnSql, (err, results, fields) => {
-            if (err) console.error(err);
-            else {
-              console.log(results);
-              txnId = results.insertId;
-              let tmpId = results.insertId;
-              // Add Transaction Detail
-              const arrTxnDetSt = addedProducts.map((d, i) => {
-                return `INSERT INTO transaction_details (id, transaction_id, product_id, quantity, description) VALUES (NULL, '${tmpId}', '${d.id}', '${d.quantity}', '')`;
-              });
-              const combinedTxnSt = arrTxnDetSt.join("; ");
-              console.log(arrTxnDetSt);
-              connectionSql.query(combinedTxnSt, (err, results, fields) => {
-                if (err) console.error(err);
-                else {
-                  console.log(results);
-                }
-              });
-            }
-          });
-        }
-      });
-    } else {
-      const addTxnSql = `INSERT INTO transactions (id, customer_id, created_at, total, sub_total, cashier_id, invoice_code, outlet_id, additional_cost, discount, taxes, status, is_paid, deadline, paid_at) VALUES (NULL, '${
-        selectedCustomer.id
-      }', current_timestamp(), '${totalFinal}', '${subTotal}', '2', '${invoiceCode}', '${params.get(
-        "oid"
-      )}', '${additionalCost}', '${discount}', '${taxes}', '${
-        selectedTransactionStat.value
-      }', '${
-        selectedPaidStat.value
-      }', 'current_timestamp()', 'current_timestamp()')`;
-      console.log(addTxnSql);
-      connectionSql.query(addTxnSql, (err, results, fields) => {
-        if (err) console.error(err);
-        else {
-          console.log(results);
-          let tmpId = results.insertId;
-          console.log(tmpId);
-          txnId = results.insertId;
-          // Add Transaction Detail
-          const arrTxnDetSt = addedProducts.map((d, i) => {
-            return `INSERT INTO transaction_details (id, transaction_id, product_id, quantity, description) VALUES (NULL, '${tmpId}', '${d.id}', '${d.quantity}', '')`;
-          });
-          const combinedTxnSt = arrTxnDetSt.join("; ");
-          console.log(arrTxnDetSt);
-          connectionSql.query(combinedTxnSt, (err, results, fields) => {
-            if (err) console.error(err);
-            else {
-              console.log(results);
-            }
-          });
-        }
-      });
-    }
-    nav("/app/a/orderan");
+    // Find All Product That Need To Be Add (New Transacation Detail)
+    const toAddProduct = newSelectedProduct.filter(
+      (p) => typeof p.product_id !== "number"
+    );
 
-    // console.log(arrTxnDetSt);
-    // console.log(data);
-    // console.log(addedProducts);
-    // console.log({
-    //   discount,
-    //   taxes,
-    //   additionalCost,
-    //   selectedPaidStat,
-    //   selectedTransactionStat,
-    // });
-    // const addTxnSql = ''
+    // Find All Product That Need To Be Deleted (Delete Transacation Detail)
+    const toDeleteProduct = originalproducts.filter(
+      (p) => !toSetProductIds.includes(p.id)
+    );
+
+    console.log(transactions);
+    console.log(selectedPaidStat.value);
+
+    const paidAt =
+      selectedPaidStat.value == 0
+        ? transactions?.paid_at
+        : selectedPaidStat.value == transactions?.is_paid
+        ? transactions.paid_at
+        : new Date().toISOString().slice(0, 19).replace("T", " ");
+
+    const updTxnSql = `UPDATE transactions
+                     SET customer_id = '${selectedCustomer?.id}', discount = '${discount}', taxes = '${taxes}', additional_cost = '${additionalCost}', status = '${selectedTransactionStat.value}', sub_total = '${subTotal}', total = '${totalFinal}', is_paid = '${selectedPaidStat.value}', paid_at = '${paidAt}'
+                     WHERE id = ${id}`;
+
+    connectionSql.query(updTxnSql, (err, results, fields) => {
+      if (err) console.error(err);
+      else {
+        console.log(results);
+      }
+    });
+
+    // // Add Customer If New
+    // if (selectedCustomer === null) {
+    //   const addCusSql = `INSERT INTO customers (id, name, address, gender, contact, outlet_id, created_at) VALUES (NULL, '${data.name}', '${data.address}', '${selectedGender.value}', '${data.contact}', '${id}', current_timestamp())`;
+    //   console.log(addCusSql);
+    //   connectionSql.query(addCusSql, (err, results, fields) => {
+    //     if (err) console.error(err);
+    //     else {
+    //       // console.log(results)
+    //       // console.log(results.insertId)
+    //       cusId = results.insertId;
+    //       let tmpId = results.insertId;
+
+    //       // Add Transaction
+    //       const addTxnSql = `INSERT INTO transactions (id, customer_id, created_at, total, sub_total, cashier_id, invoice_code, outlet_id, additional_cost, discount, taxes, status, is_paid, deadline, paid_at) VALUES (NULL, '${tmpId}', current_timestamp(), '${totalFinal}', '${subTotal}', '2', '${invoiceCode}', '${params.get(
+    //         "oid"
+    //       )}', '${additionalCost}', '${discount}', '${taxes}', '${
+    //         selectedTransactionStat.value
+    //       }', '${
+    //         selectedPaidStat.value
+    //       }', 'current_timestamp()', 'current_timestamp()')`;
+    //       console.log(addTxnSql);
+    //       connectionSql.query(addTxnSql, (err, results, fields) => {
+    //         if (err) console.error(err);
+    //         else {
+    //           console.log(results);
+    //           txnId = results.insertId;
+    //           let tmpId = results.insertId;
+    //           // Add Transaction Detail
+    //           const arrTxnDetSt = addedProducts.map((d, i) => {
+    //             return `INSERT INTO transaction_details (id, transaction_id, product_id, quantity, description) VALUES (NULL, '${tmpId}', '${d.id}', '${d.quantity}', '')`;
+    //           });
+    //           const combinedTxnSt = arrTxnDetSt.join("; ");
+    //           console.log(arrTxnDetSt);
+    //           connectionSql.query(combinedTxnSt, (err, results, fields) => {
+    //             if (err) console.error(err);
+    //             else {
+    //               console.log(results);
+    //             }
+    //           });
+    //         }
+    //       });
+    //     }
+    //   });
+    // } else {
+    //   const addTxnSql = `INSERT INTO transactions (id, customer_id, created_at, total, sub_total, cashier_id, invoice_code, outlet_id, additional_cost, discount, taxes, status, is_paid, deadline, paid_at) VALUES (NULL, '${
+    //     selectedCustomer.id
+    //   }', current_timestamp(), '${totalFinal}', '${subTotal}', '2', '${invoiceCode}', '${params.get(
+    //     "oid"
+    //   )}', '${additionalCost}', '${discount}', '${taxes}', '${
+    //     selectedTransactionStat.value
+    //   }', '${
+    //     selectedPaidStat.value
+    //   }', 'current_timestamp()', 'current_timestamp()')`;
+    //   console.log(addTxnSql);
+    //   connectionSql.query(addTxnSql, (err, results, fields) => {
+    //     if (err) console.error(err);
+    //     else {
+    //       console.log(results);
+    //       let tmpId = results.insertId;
+    //       console.log(tmpId);
+    //       txnId = results.insertId;
+    //       // Add Transaction Detail
+    //       const arrTxnDetSt = addedProducts.map((d, i) => {
+    //         return `INSERT INTO transaction_details (id, transaction_id, product_id, quantity, description) VALUES (NULL, '${tmpId}', '${d.id}', '${d.quantity}', '')`;
+    //       });
+    //       const combinedTxnSt = arrTxnDetSt.join("; ");
+    //       console.log(arrTxnDetSt);
+    //       connectionSql.query(combinedTxnSt, (err, results, fields) => {
+    //         if (err) console.error(err);
+    //         else {
+    //           console.log(results);
+    //         }
+    //       });
+    //     }
+    //   });
+    // }
+    // nav("/app/a/orderan");
   });
 
   return (
